@@ -1,4 +1,50 @@
+@charset "UTF-8";
+/*
+색상
+*/
+.swiper-pagination {
+  display: flex;
+  align-items: center;
+  width: 70px !important;
+  padding: 0.4rem;
+  left: 50% !important;
+  right: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  border-radius: 20px;
+  background-color: white;
+  opacity: 0.5;
+}
+
+h1 {
+  font-size: 2rem;
+}
+
+h2 {
+  font-size: 1.5rem;
+}
+
+h3 {
+  font-size: 1.17rem;
+}
+
+h4 {
+  font-size: 1rem;
+}
+
+h5 {
+  font-size: 0.83rem;
+}
+
+h6 {
+  font-size: 0.67rem;
+}
+
+p {
+  font-size: 0.875rem;
+}
+
 #app {
+  position: relative;
   width: 100%;
   max-width: 460px;
   margin: auto;
@@ -61,4 +107,8 @@ table {
 ul,
 li {
   list-style: none;
+}
+
+body {
+  color: #3d3b40;
 }

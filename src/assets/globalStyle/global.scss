@@ -1,4 +1,63 @@
+/*
+색상
+*/
+$black-color: #3d3b40;
+$cloudy-black-color: #3d3b40;
+$white-color: white;
+$cloudy-gray: #c0c0c0;
+$orange-color: #ff8000;
+
+$heading1-size: 2rem;
+$heading2-size: 1.5rem;
+$heading3-size: 1.17rem;
+$heading4-size: 1rem;
+$heading5-size: 0.83rem;
+$heading6-size: 0.67rem;
+$paragraph-size: 0.875rem; // 문단 크기
+
+.swiper-pagination {
+  display: flex;
+  align-items: center;
+  width: 70px !important;
+  padding: 0.4rem;
+  left: 50% !important;
+  right: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  border-radius: 20px;
+  background-color: white;
+  opacity: 0.5;
+}
+
+h1 {
+  font-size: $heading1-size;
+}
+
+h2 {
+  font-size: $heading2-size;
+}
+
+h3 {
+  font-size: $heading3-size;
+}
+
+h4 {
+  font-size: $heading4-size;
+}
+
+h5 {
+  font-size: $heading5-size;
+}
+
+h6 {
+  font-size: $heading6-size;
+}
+
+p {
+  font-size: $paragraph-size;
+}
+
 #app {
+  position: relative;
   width: 100%;
   max-width: 460px;
   margin: auto;
@@ -53,4 +112,8 @@ table {
 ul,
 li {
   list-style: none;
+}
+
+body {
+  color: $black-color;
 }

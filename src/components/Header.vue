@@ -1,41 +1,42 @@
+<script setup lang="ts">
+import { defineProps } from 'vue';
+
+const props = defineProps({
+  currentTapName: String,
+  handleTapChange: Function,
+});
+</script>
+
 <template>
   <header class="header">
     <div class="logo"><span>Vue</span>Book</div>
 
     <ul class="taps">
       <li
-        :class="{ active: currentTapName === '추천' }"
+        :class="{ active: props.currentTapName === '추천' }"
         class="tap"
-        @click="currentTap"
+        @click="(e) => handleTapChange && handleTapChange(e)"
       >
-        추천
+        <router-link to="/"> 추천 </router-link>
       </li>
       <li
-        :class="{ active: currentTapName === '팔로잉' }"
+        :class="{ active: props.currentTapName === '팔로잉' }"
         class="tap"
-        @click="currentTap"
+        @click="(e) => handleTapChange && handleTapChange(e)"
       >
-        팔로잉
+        <router-link to="/following"> 팔로잉 </router-link>
       </li>
     </ul>
   </header>
 </template>
 
-<script setup lang="ts">
-import { ref } from 'vue';
-
-let currentTapName = ref('추천');
-
-function currentTap(e: any) {
-  currentTapName.value = e.target.outerText;
-}
-</script>
-
 <style lang="scss">
 .header {
+  position: relative;
   font-weight: 400;
   font-size: 1rem;
   border-bottom: 1px solid #eee;
+  background-color: $white-color;
 }
 
 .logo {
@@ -51,6 +52,7 @@ function currentTap(e: any) {
   display: flex;
   padding: 0 1rem;
   width: 100%;
+  font-size: 0.875rem;
 
   .tap {
     padding: 0 0.5rem;

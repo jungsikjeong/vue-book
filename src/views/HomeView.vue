@@ -1,7 +1,21 @@
+<script setup lang="ts">
+import HotTopicSwiper from '@/components/HotTopicSwiper.vue';
+import PostList from '@/components/post-list/index.vue';
+</script>
+
 <template>
-  <div>Home입니다.</div>
+  <div class="container">
+    <HotTopicSwiper />
+
+    <PostList :title="`최신기록`" />
+  </div>
 </template>
 
-<script setup lang="ts"></script>
+<style lang="scss" scoped>
+.container {
+}
 
-<style></style>
+.section-title {
+  font-weight: bold;
+}
+</style>
