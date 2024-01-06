@@ -1,11 +1,16 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 
 let dataId = ref('0');
 
-function handleCurrentPage(e: any) {
+function onCurrentPage(e: any) {
   dataId.value = e.currentTarget.dataset.id;
+  localStorage.setItem('current-page', JSON.stringify(dataId.value));
 }
+
+onMounted(() => {
+  dataId.value = JSON.parse(localStorage.getItem('current-page') || '0');
+});
 </script>
 
 <template>
@@ -13,7 +18,7 @@ function handleCurrentPage(e: any) {
     <ul class="icons-list">
       <li
         :class="{ current: dataId === '0' }"
-        @click="handleCurrentPage"
+        @click="onCurrentPage"
         data-id="0"
       >
         <router-link to="/">
@@ -23,7 +28,7 @@ function handleCurrentPage(e: any) {
 
       <li
         :class="{ current: dataId === '1' }"
-        @click="handleCurrentPage"
+        @click="onCurrentPage"
         data-id="1"
       >
         <router-link to="/search">
@@ -31,7 +36,7 @@ function handleCurrentPage(e: any) {
         </router-link>
       </li>
 
-      <button class="writer-button" @click="handleCurrentPage" data-id="2">
+      <button class="writer-button" @click="onCurrentPage" data-id="2">
         <router-link to="/writer">
           <font-awesome-icon :icon="['fas', 'plus']" />
         </router-link>
@@ -39,7 +44,7 @@ function handleCurrentPage(e: any) {
 
       <li
         :class="{ current: dataId === '3' }"
-        @click="handleCurrentPage"
+        @click="onCurrentPage"
         data-id="3"
       >
         <router-link to="/notification">
@@ -49,7 +54,7 @@ function handleCurrentPage(e: any) {
 
       <li
         :class="{ current: dataId === '4' }"
-        @click="handleCurrentPage"
+        @click="onCurrentPage"
         data-id="4"
       >
         <router-link to="/myPage">
