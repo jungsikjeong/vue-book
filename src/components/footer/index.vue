@@ -16,7 +16,9 @@ function handleCurrentPage(e: any) {
         @click="handleCurrentPage"
         data-id="0"
       >
-        <font-awesome-icon :icon="['fas', 'house']" />
+        <router-link to="/">
+          <font-awesome-icon :icon="['fas', 'house']" />
+        </router-link>
       </li>
 
       <li
@@ -24,11 +26,15 @@ function handleCurrentPage(e: any) {
         @click="handleCurrentPage"
         data-id="1"
       >
-        <font-awesome-icon :icon="['fas', 'magnifying-glass']" />
+        <router-link to="/search">
+          <font-awesome-icon :icon="['fas', 'magnifying-glass']" />
+        </router-link>
       </li>
 
       <button class="writer-button" @click="handleCurrentPage" data-id="2">
-        <font-awesome-icon :icon="['fas', 'plus']" />
+        <router-link to="/writer">
+          <font-awesome-icon :icon="['fas', 'plus']" />
+        </router-link>
       </button>
 
       <li
@@ -36,7 +42,9 @@ function handleCurrentPage(e: any) {
         @click="handleCurrentPage"
         data-id="3"
       >
-        <font-awesome-icon icon="bell" />
+        <router-link to="/notification">
+          <font-awesome-icon icon="bell" />
+        </router-link>
       </li>
 
       <li
@@ -44,7 +52,9 @@ function handleCurrentPage(e: any) {
         @click="handleCurrentPage"
         data-id="4"
       >
-        <font-awesome-icon icon="user" />
+        <router-link to="/myPage">
+          <font-awesome-icon icon="user" />
+        </router-link>
       </li>
     </ul>
   </div>

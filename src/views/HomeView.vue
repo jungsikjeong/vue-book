@@ -7,14 +7,11 @@ import PostList from '@/components/post-list/index.vue';
   <div class="container">
     <HotTopicSwiper />
 
-    <PostList :title="`최신기록`" />
+    <PostList />
   </div>
 </template>
 
 <style lang="scss" scoped>
-.container {
-}
-
 .section-title {
   font-weight: bold;
 }

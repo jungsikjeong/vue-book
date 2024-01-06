@@ -9,20 +9,22 @@ const props = defineProps({
 
 <template>
   <header class="header">
-    <div class="logo"><span>Vue</span>Book</div>
+    <div class="logo" @click="handleTapChange && handleTapChange('추천')">
+      <router-link to="/"><span>Vue</span>Book</router-link>
+    </div>
 
     <ul class="taps">
       <li
         :class="{ active: props.currentTapName === '추천' }"
         class="tap"
-        @click="(e) => handleTapChange && handleTapChange(e)"
+        @click="handleTapChange && handleTapChange('추천')"
       >
         <router-link to="/"> 추천 </router-link>
       </li>
       <li
         :class="{ active: props.currentTapName === '팔로잉' }"
         class="tap"
-        @click="(e) => handleTapChange && handleTapChange(e)"
+        @click="handleTapChange && handleTapChange('팔로잉')"
       >
         <router-link to="/following"> 팔로잉 </router-link>
       </li>

@@ -2,11 +2,13 @@
 import Header from '@/components/Header.vue';
 import Footer from '@/components/footer/index.vue';
 import { ref } from 'vue';
+import { useRoute } from 'vue-router';
 
+const route = useRoute();
 let currentTapName = ref('추천');
 
-function handleTapChange(e: any) {
-  currentTapName.value = e.target.outerText;
+function handleTapChange(name: string) {
+  currentTapName.value = name;
 }
 </script>
 
@@ -14,6 +16,7 @@ function handleTapChange(e: any) {
   <Header
     :currentTapName="currentTapName"
     :handleTapChange="handleTapChange"
+    v-if="route.path === '/'"
   ></Header>
 
   <div class="container">

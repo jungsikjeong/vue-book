@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { defineProps } from 'vue';
 import PostItem from './post-item/index.vue';
 import Button from '../button/index.vue';
+import SubTitle from '../sub-title/index.vue';
 
 const postList = [
   {
@@ -59,13 +59,11 @@ const postList = [
     tags: ['나탐구일지,디저트,기분전환'],
   },
 ];
-
-const sectionTitle = defineProps({ title: String });
 </script>
 
 <template>
   <div class="container">
-    <h4 class="section-title">{{ sectionTitle.title }}</h4>
+    <SubTitle :title="`최신 기록`"></SubTitle>
 
     <ul class="post-list">
       <PostItem
@@ -82,10 +80,7 @@ const sectionTitle = defineProps({ title: String });
 .container {
   padding: 1rem;
 }
-.section-title {
-  font-weight: bold;
-  margin-bottom: 1rem;
-}
+
 .post-list {
   display: flex;
   justify-content: center;
