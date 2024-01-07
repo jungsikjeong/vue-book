@@ -3,28 +3,28 @@ import { defineProps } from 'vue';
 
 const props = defineProps({
   currentTapName: String,
-  handleTapChange: Function,
+  onTapChange: Function,
 });
 </script>
 
 <template>
   <header class="header">
-    <div class="logo" @click="handleTapChange && handleTapChange('추천')">
+    <div class="logo" @click="onTapChange && onTapChange('')">
       <router-link to="/"><span>Vue</span>Book</router-link>
     </div>
 
     <ul class="taps">
       <li
-        :class="{ active: props.currentTapName === '추천' }"
+        :class="{ active: props.currentTapName === '' }"
         class="tap"
-        @click="handleTapChange && handleTapChange('추천')"
+        @click="onTapChange && onTapChange('')"
       >
         <router-link to="/"> 추천 </router-link>
       </li>
       <li
         :class="{ active: props.currentTapName === '팔로잉' }"
         class="tap"
-        @click="handleTapChange && handleTapChange('팔로잉')"
+        @click="onTapChange && onTapChange('팔로잉')"
       >
         <router-link to="/following"> 팔로잉 </router-link>
       </li>

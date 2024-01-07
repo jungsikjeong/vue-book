@@ -1,11 +1,21 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, inject, onMounted } from 'vue';
+
+interface FooterProps {
+  // eslint-disable-next-line no-unused-vars
+  onTapChange: (name: string) => void;
+}
+
+const { onTapChange } = inject<FooterProps>('currentTapName', {
+  onTapChange: () => {},
+});
 
 let dataId = ref('0');
 
 function onCurrentPage(e: any) {
   dataId.value = e.currentTarget.dataset.id;
   localStorage.setItem('current-page', JSON.stringify(dataId.value));
+  onTapChange('');
 }
 
 onMounted(() => {

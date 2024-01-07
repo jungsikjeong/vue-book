@@ -1,13 +1,15 @@
 <script setup lang="ts">
 import Header from '@/components/Header.vue';
 import Footer from '@/components/footer/index.vue';
-import { ref } from 'vue';
+import { ref, provide } from 'vue';
 import { useRoute } from 'vue-router';
 
 const route = useRoute();
-let currentTapName = ref('추천');
+let currentTapName = ref('');
 
-function handleTapChange(name: string) {
+provide('currentTapName', { currentTapName, onTapChange });
+
+function onTapChange(name: string) {
   currentTapName.value = name;
 }
 </script>
@@ -15,7 +17,7 @@ function handleTapChange(name: string) {
 <template>
   <Header
     :currentTapName="currentTapName"
-    :handleTapChange="handleTapChange"
+    :onTapChange="onTapChange"
     v-if="route.path === '/'"
   ></Header>
 
