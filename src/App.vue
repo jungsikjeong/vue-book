@@ -29,8 +29,8 @@ function onTapChange(name: string) {
 
 <style lang="scss" scoped>
 .container {
-  max-width: 40rem;
-  margin: 0 auto;
+  /* max-width: 40rem;
+  margin: 0 auto; */
   padding-bottom: 1.5rem;
 }
 </style>

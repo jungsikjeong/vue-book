@@ -80,7 +80,8 @@ const postList = [
 .container {
   padding: 1rem;
   max-width: 40rem;
-  margin: auto;
+  margin: 0 auto;
+  margin-bottom: 3rem;
 }
 
 .post-list {

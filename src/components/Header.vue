@@ -36,7 +36,7 @@ const props = defineProps({
 .header {
   position: relative;
   max-width: 40rem;
-  margin: 0 auto;
+  margin: 0 auto !important;
   font-weight: 400;
   font-size: 1rem;
   border-bottom: 1px solid #eee;

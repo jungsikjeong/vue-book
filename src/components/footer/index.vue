@@ -25,7 +25,7 @@ onMounted(() => {
 
 <template>
   <div class="container">
-    <ul class="icons-list">
+    <ul class="footer-list">
       <li
         :class="{ current: dataId === '0' }"
         @click="onCurrentPage"
@@ -85,11 +85,12 @@ onMounted(() => {
   background-color: $white-color;
   font-size: 1.1rem;
 }
-.icons-list {
+.footer-list {
   display: flex;
   align-items: center;
   justify-content: space-around;
-
+  max-width: 40rem;
+  margin: 0 auto;
   li {
     cursor: pointer;
   }

@@ -127,6 +127,8 @@ onUnmounted(() => {
 <style lang="scss" scoped>
 .container {
   padding: 1rem;
+  max-width: 40rem;
+  margin: 0 auto;
 }
 
 .search-input {

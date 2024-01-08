@@ -89,6 +89,8 @@ function onModalOpen() {
 
 <style lang="scss" scoped>
 .container {
+  max-width: 40rem;
+  margin: 0 auto;
   padding: 1rem;
 }
 .myPage-header {
