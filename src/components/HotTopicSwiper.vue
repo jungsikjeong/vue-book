@@ -52,7 +52,6 @@ const updateCurrentSlide = (e: any) => {
     <div class="top-wrapper"></div>
 
     <div class="bottom-wrapper">
-      <div class="label">에디터's Pick</div>
       <swiper
         :rewind="true"
         :navigation="false"
@@ -71,6 +70,8 @@ const updateCurrentSlide = (e: any) => {
         @slide-change="(e) => updateCurrentSlide(e)"
         class="mySwiper"
       >
+        <div class="label">에디터's Pick</div>
+
         <swiper-slide v-for="slide in slides" :key="slide.id">
           <div class="image-wrap">
             <img :src="slide.src" />
@@ -104,11 +105,16 @@ const updateCurrentSlide = (e: any) => {
   .swiper {
     top: 190px !important;
     height: 350px !important;
+    max-width: 21rem !important;
   }
 
   .label {
-    top: 25px !important;
-    left: 25px !important;
+    top: 10px !important;
+    left: 15px !important;
+  }
+
+  .text-wrap {
+    padding: 1rem !important;
   }
 }
 .container {
@@ -134,8 +140,10 @@ const updateCurrentSlide = (e: any) => {
   left: 50%;
   right: 50%;
   transform: translate(-50%, -50%);
-  width: 95%;
   height: 433px;
+  width: 100%;
+  max-width: 40rem;
+  margin: 0 auto;
 
   .image-wrap {
     position: relative;
@@ -151,8 +159,8 @@ const updateCurrentSlide = (e: any) => {
 .label {
   position: absolute;
   z-index: 10;
-  top: 35px;
-  left: 35px;
+  top: 15px;
+  left: 10px;
   background-color: $orange-color;
   padding: 5px 8px;
   border-radius: 2.5px;
@@ -161,7 +169,9 @@ const updateCurrentSlide = (e: any) => {
 }
 
 .text-wrap {
-  padding: 1rem;
+  width: 40rem;
+  margin: 0 auto;
+  padding: 1rem 0rem;
 
   .title {
     font-weight: 600;

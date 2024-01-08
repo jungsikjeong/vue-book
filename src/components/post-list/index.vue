@@ -79,6 +79,8 @@ const postList = [
 <style scoped lang="scss">
 .container {
   padding: 1rem;
+  max-width: 40rem;
+  margin: auto;
 }
 
 .post-list {

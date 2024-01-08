@@ -64,11 +64,10 @@ function onLogout() {
 .container {
   position: absolute;
   top: 0;
-  left: 0;
   bottom: 0;
   z-index: 10;
   background-color: white;
-  width: 100%;
+  width: 40rem;
   height: 100vh;
   // 최소 너비 600px일 때
   @media (min-width: 600px) {

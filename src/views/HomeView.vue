@@ -4,11 +4,9 @@ import PostList from '@/components/post-list/index.vue';
 </script>
 
 <template>
-  <div class="container">
-    <HotTopicSwiper />
+  <HotTopicSwiper />
 
-    <PostList />
-  </div>
+  <PostList />
 </template>
 
 <style lang="scss" scoped></style>

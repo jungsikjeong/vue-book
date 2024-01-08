@@ -72,8 +72,10 @@ p {
 #app {
   position: relative;
   width: 100%;
-  max-width: 40rem;
-  margin: auto;
+}
+
+.swiper-pagination {
+  bottom: 20px !important;
 }
 
 * {

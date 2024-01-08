@@ -23,13 +23,14 @@ function onTapChange(name: string) {
 
   <div class="container">
     <router-view></router-view>
+    <Footer></Footer>
   </div>
-
-  <Footer></Footer>
 </template>
 
 <style lang="scss" scoped>
 .container {
+  max-width: 40rem;
+  margin: 0 auto;
   padding-bottom: 1.5rem;
 }
 </style>
