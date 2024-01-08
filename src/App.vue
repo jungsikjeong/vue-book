@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import Header from '@/components/Header.vue';
-import Footer from '@/components/footer/index.vue';
 import { ref, provide } from 'vue';
 import { useRoute } from 'vue-router';
+import { useStore } from 'vuex';
+import Header from '@/components/Header.vue';
+import Footer from '@/components/footer/index.vue';
 
 const route = useRoute();
 let currentTapName = ref('');
@@ -12,6 +13,11 @@ provide('currentTapName', { currentTapName, onTapChange });
 function onTapChange(name: string) {
   currentTapName.value = name;
 }
+
+const store = useStore();
+
+// 이런식으로 사용
+console.log(store.state.userStore.userName);
 </script>
 
 <template>
@@ -29,8 +35,6 @@ function onTapChange(name: string) {
 
 <style lang="scss" scoped>
 .container {
-  /* max-width: 40rem;
-  margin: 0 auto; */
   padding-bottom: 1.5rem;
 }
 </style>

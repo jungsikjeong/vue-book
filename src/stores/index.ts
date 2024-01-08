@@ -1,12 +1,10 @@
 import { createStore } from 'vuex';
-// import { moduleA, CounterState } from "@/store/modules/ModuleA";
-// import { moduleB, ModuleAState } from "@/store/modules/ModuleB";
+import userStore from './modules/userStore';
 
-export interface RootState {
-  //   ModuleA: ModuleAState;
-  //   ModuleB: ModuleBState;
-}
-
-export default createStore({
-  //   modules: { moduleA, moduleB },
+const store = createStore({
+  modules: {
+    userStore: userStore,
+  },
 });
+
+export default store;
