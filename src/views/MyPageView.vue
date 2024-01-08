@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { inject, ref } from 'vue';
-import userSettingModal from '../components/modal/user-setting-modal/index.vue';
 
+import userSettingModal from '../components/modal/user-setting-modal/index.vue';
+import PostList from '../components/my-page/post-list.vue';
 // TODO 유저의 기록,팔로워,팔로잉 숫자가 1이상이면 텍스트색상 굵게
 
 interface MyPageViewProps {
@@ -33,7 +34,7 @@ function onModalOpen() {
       <font-awesome-icon :icon="['fas', 'gear']" @click="onModalOpen" />
     </div>
 
-    <div class="section flex-box">
+    <div class="section">
       <div class="user-info-wrap">
         <img
           class="user-image"
@@ -79,6 +80,10 @@ function onModalOpen() {
         </li>
       </ul>
     </header>
+
+    <div class="section">
+      <PostList />
+    </div>
   </div>
 </template>
 
