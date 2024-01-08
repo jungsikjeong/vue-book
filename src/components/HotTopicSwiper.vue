@@ -96,6 +96,21 @@ const updateCurrentSlide = (e: any) => {
 </template>
 
 <style scoped lang="scss">
+@media screen and (max-width: 480px) {
+  .bottom-wrapper {
+    min-height: 430px !important;
+  }
+
+  .swiper {
+    top: 190px !important;
+    height: 350px !important;
+  }
+
+  .label {
+    top: 25px !important;
+    left: 25px !important;
+  }
+}
 .container {
   position: relative;
   color: $white-color;
@@ -108,18 +123,19 @@ const updateCurrentSlide = (e: any) => {
 .bottom-wrapper {
   display: flex;
   align-items: end;
-  min-height: 350px;
+  min-height: 520px;
   background-color: $black-color;
   cursor: pointer;
 }
+
 .swiper {
   position: absolute;
-  top: 150px;
+  top: 240px;
   left: 50%;
   right: 50%;
   transform: translate(-50%, -50%);
-  width: 90%;
-  height: 250px;
+  width: 95%;
+  height: 433px;
 
   .image-wrap {
     position: relative;

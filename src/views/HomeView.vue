@@ -11,8 +11,4 @@ import PostList from '@/components/post-list/index.vue';
   </div>
 </template>
 
-<style lang="scss" scoped>
-.section-title {
-  font-weight: bold;
-}
-</style>
+<style lang="scss" scoped></style>

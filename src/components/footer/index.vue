@@ -79,7 +79,7 @@ onMounted(() => {
 .container {
   position: fixed;
   bottom: 0;
-  max-width: 450px;
+  max-width: 40rem;
   width: 100%;
   height: 55px;
   padding: 1rem;
