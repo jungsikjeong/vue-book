@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { inject, ref } from 'vue';
-import SettingModal from '../components/setting-modal/index.vue';
+import userSettingModal from '../components/modal/user-setting-modal/index.vue';
 
 // TODO 유저의 기록,팔로워,팔로잉 숫자가 1이상이면 텍스트색상 굵게
 
@@ -16,20 +16,18 @@ const { currentTapName, onTapChange } = inject<MyPageViewProps>(
   { currentTapName: '', onTapChange: () => {} }
 );
 
-const modalState = ref(false);
+const modalShow = ref(false);
 
 function onModalOpen() {
-  modalState.value = !modalState.value;
+  modalShow.value = !modalShow.value;
 }
 </script>
 
 <template>
   <div class="container">
-    <SettingModal
-      :onModalOpen="onModalOpen"
-      :modalState="modalState"
-      :class="modalState ? 'open' : 'close'"
-    />
+    <Transition name="slide-fade">
+      <userSettingModal :onModalOpen="onModalOpen" v-if="modalShow" />
+    </Transition>
 
     <div class="myPage-header">
       <font-awesome-icon :icon="['fas', 'gear']" @click="onModalOpen" />

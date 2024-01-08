@@ -1,12 +1,38 @@
 <script setup lang="ts">
-import { defineProps } from 'vue';
+import { defineProps, ref } from 'vue';
+import ProfileEditView from '@/views/ProfileEditView.vue';
+import InfoModal from '../info-modal/index.vue';
 
-const props = defineProps({ onModalOpen: Function, modalState: Boolean });
+const props = defineProps({ onModalOpen: Function });
+
+const profileViewState = ref(false);
+const userInfoState = ref(false);
+
+function onProfileView() {
+  profileViewState.value = !profileViewState.value;
+}
+
+function onLogout() {
+  userInfoState.value = !userInfoState.value;
+}
 </script>
 
 <template>
-  <div class="container modal-menu">
-    <div class="header">
+  <div class="container">
+    <ProfileEditView
+      v-if="profileViewState"
+      :profileViewState="profileViewState"
+      :onProfileView="onProfileView"
+    />
+
+    <InfoModal
+      :title="`로그아웃`"
+      :content="`로그아웃 하시겠어요?`"
+      :onLogout="onLogout"
+      v-if="userInfoState"
+    />
+
+    <div class="header" v-if="!profileViewState">
       <font-awesome-icon
         :icon="['fas', 'xmark']"
         class="pointer"
@@ -16,18 +42,20 @@ const props = defineProps({ onModalOpen: Function, modalState: Boolean });
       설정
     </div>
 
-    <ul class="list">
+    <ul class="list" v-if="!profileViewState">
       <li class="item">
-        <div class="pointer">프로필 수정</div>
+        <div class="pointer" @click="onProfileView">프로필 수정</div>
 
-        <div class="pointer">
+        <div class="pointer" @click="onProfileView">
           <font-awesome-icon :icon="['fas', 'arrow-right']" />
         </div>
       </li>
 
       <li class="line"></li>
 
-      <li class="item m-1"><span class="pointer">로그아웃</span></li>
+      <li class="item m-1">
+        <span class="pointer" @click="onLogout">로그아웃</span>
+      </li>
     </ul>
   </div>
 </template>
