@@ -21,7 +21,6 @@ const firebaseConfig = {
   appId: process.env.VUE_APP_APP_ID,
 };
 
-console.log(firebaseConfig);
 const firebaseApp = firebase.initializeApp(firebaseConfig);
 
 const db = firebaseApp.firestore();

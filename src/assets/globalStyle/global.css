@@ -74,10 +74,6 @@ p {
   width: 100%;
 }
 
-.swiper-pagination {
-  bottom: 20px !important;
-}
-
 * {
   margin: 0;
   padding: 0;
@@ -143,4 +139,37 @@ strong {
 
 body {
   color: #3d3b40;
+}
+
+.swiper-pagination {
+  bottom: 20px !important;
+}
+
+.login-swiper .swiper-pagination-bullet-active {
+  width: 20px !important;
+  height: 5px !important;
+  border-radius: 5px !important;
+  transition: width 0.5s;
+}
+
+.login-swiper .swiper-pagination {
+  justify-content: center;
+}
+
+.login-swiper .swiper-pagination {
+  bottom: 315px !important;
+  background-color: transparent !important;
+}
+
+.swiper-pagination {
+  display: flex;
+  align-items: center;
+  width: 70px !important;
+  padding: 0.4rem;
+  left: 50% !important;
+  right: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  border-radius: 20px;
+  background-color: white;
+  opacity: 0.5;
 }

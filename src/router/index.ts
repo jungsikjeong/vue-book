@@ -5,6 +5,7 @@ import SearchViewVue from '@/views/SearchView.vue';
 import WriterViewVue from '@/views/WriterView.vue';
 import NotificationView from '@/views/NotificationView.vue';
 import MyPageView from '@/views/MyPageView.vue';
+import LoginViewVue from '@/views/LoginView.vue';
 
 const router = createRouter({
   history: createWebHistory(),
@@ -13,6 +14,11 @@ const router = createRouter({
       path: '/',
       name: 'Home',
       component: HomeView,
+    },
+    {
+      path: '/login',
+      name: 'Login',
+      component: LoginViewVue,
     },
     {
       path: '/following',

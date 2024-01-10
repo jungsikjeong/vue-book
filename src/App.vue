@@ -29,7 +29,7 @@ console.log(store.state.userStore.userName);
 
   <div class="container">
     <router-view></router-view>
-    <Footer></Footer>
+    <Footer v-if="route.path !== '/login'"></Footer>
   </div>
 </template>
 
