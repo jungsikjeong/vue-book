@@ -1,59 +1,44 @@
 <script setup lang="ts">
-import { ref, inject, onMounted } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { inject } from 'vue';
 
 interface FooterProps {
   // eslint-disable-next-line no-unused-vars
   onTapChange: (name: string) => void;
 }
 
-const route = useRoute();
-const router = useRouter();
-
-let currentPage = ref('');
-
 const { onTapChange } = inject<FooterProps>('currentTapName', {
   onTapChange: () => {},
-});
-
-const onCurrentPage = () => {
-  currentPage.value = route.path;
-  onTapChange('');
-};
-
-onMounted(async () => {
-  await router.isReady();
-  currentPage.value = route.path;
 });
 </script>
 
 <template>
   <div class="container">
     <ul class="footer-list">
-      <li :class="{ current: currentPage === '/' }" @click="onCurrentPage">
+      <li :class="{ current: $route.path === '/' }" @click="onTapChange('')">
         <router-link to="/">
           <font-awesome-icon :icon="['fas', 'house']" />
         </router-link>
       </li>
 
       <li
-        :class="{ current: currentPage === '/search' }"
-        @click="onCurrentPage"
+        :class="{ current: $route.path === '/search' }"
+        @click="onTapChange('')"
+        data-id="1"
       >
         <router-link to="/search">
           <font-awesome-icon :icon="['fas', 'magnifying-glass']" />
         </router-link>
       </li>
 
-      <button class="writer-button" @click="onCurrentPage" data-id="2">
+      <button class="writer-button" @click="onTapChange('')">
         <router-link to="/writer">
           <font-awesome-icon :icon="['fas', 'plus']" />
         </router-link>
       </button>
 
       <li
-        :class="{ current: currentPage === '/notification' }"
-        @click="onCurrentPage"
+        :class="{ current: $route.path === '/notification' }"
+        @click="onTapChange('')"
       >
         <router-link to="/notification">
           <font-awesome-icon icon="bell" />
@@ -61,8 +46,8 @@ onMounted(async () => {
       </li>
 
       <li
-        :class="{ current: currentPage === '/myPage' }"
-        @click="onCurrentPage"
+        :class="{ current: $route.path === '/myPage' }"
+        @click="onTapChange('')"
       >
         <router-link to="/myPage">
           <font-awesome-icon icon="user" />

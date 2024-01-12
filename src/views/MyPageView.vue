@@ -49,7 +49,7 @@ const onCloseModal = () => {
     v-if="!user"
   ></InfoModal>
 
-  <div class="container">
+  <div class="container" v-if="user">
     <Transition name="slide-fade">
       <userSettingModal :onModalOpen="onModalOpen" v-if="modalShow" />
     </Transition>

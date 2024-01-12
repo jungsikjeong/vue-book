@@ -8,7 +8,7 @@ onMounted(() => {
     try {
       await fetchKakaoAuth();
 
-      router.push('/');
+      router.replace('/');
     } catch (error: any) {
       console.log(error);
       alert(error.message);

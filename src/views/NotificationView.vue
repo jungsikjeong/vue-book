@@ -28,7 +28,7 @@ const onCloseModal = () => {
     v-if="!user"
   ></InfoModal>
 
-  <div class="container">
+  <div class="container" v-if="user">
     <header class="header">알림</header>
 
     <div class="not-found">
