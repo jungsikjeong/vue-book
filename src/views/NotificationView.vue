@@ -1,6 +1,33 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { ref } from 'vue';
+import { useStore } from 'vuex';
+import router from '@/router';
+
+import InfoModal from '../components/modal/info-modal/index.vue';
+
+const store = useStore();
+
+const user = ref(store.getters['userStore/getUser']);
+
+const onLoginLinkClick = () => {
+  router.push('/login');
+};
+
+const onCloseModal = () => {
+  router.go(-1);
+};
+</script>
 
 <template>
+  <InfoModal
+    :title="`로그인이 필요해요.`"
+    :content="`로그인 후 기능을 사용할 수 있어요`"
+    :butName="`로그인`"
+    :onClick="onLoginLinkClick"
+    :onCloseModal="onCloseModal"
+    v-if="!user"
+  ></InfoModal>
+
   <div class="container">
     <header class="header">알림</header>
 

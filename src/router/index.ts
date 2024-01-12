@@ -6,6 +6,7 @@ import WriterViewVue from '@/views/WriterView.vue';
 import NotificationView from '@/views/NotificationView.vue';
 import MyPageView from '@/views/MyPageView.vue';
 import LoginViewVue from '@/views/LoginView.vue';
+import KakaoCallBackVue from '@/components/social-login/KakaoCallBack.vue';
 
 const router = createRouter({
   history: createWebHistory(),
@@ -44,6 +45,11 @@ const router = createRouter({
       path: '/myPage',
       name: 'MyPage',
       component: MyPageView,
+    },
+    {
+      path: '/callback/kakaotalk',
+      name: 'kakaotalk',
+      component: KakaoCallBackVue,
     },
   ],
 });

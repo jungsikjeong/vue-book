@@ -1,16 +1,23 @@
 <script setup lang="ts">
 import { inject, ref } from 'vue';
+import router from '@/router';
+import { useStore } from 'vuex';
 
 import userSettingModal from '../components/modal/user-setting-modal/index.vue';
 import PostList from '../components/my-page/post-list.vue';
+import InfoModal from '../components/modal/info-modal/index.vue';
+
 // TODO 유저의 기록,팔로워,팔로잉 숫자가 1이상이면 텍스트색상 굵게
 
 interface MyPageViewProps {
   currentTapName: string;
-
   // eslint-disable-next-line no-unused-vars
   onTapChange: (name: string) => void;
 }
+
+const store = useStore();
+
+const user = ref(store.getters['userStore/getUser']);
 
 const { currentTapName, onTapChange } = inject<MyPageViewProps>(
   'currentTapName',
@@ -19,76 +26,97 @@ const { currentTapName, onTapChange } = inject<MyPageViewProps>(
 
 const modalShow = ref(false);
 
-function onModalOpen() {
+const onModalOpen = () => {
   modalShow.value = !modalShow.value;
-}
+};
+
+const onLoginLinkClick = () => {
+  router.push('/login');
+};
+
+const onCloseModal = () => {
+  router.go(-1);
+};
 </script>
 
 <template>
+  <InfoModal
+    :title="`로그인이 필요해요.`"
+    :content="`로그인 후 기능을 사용할 수 있어요`"
+    :butName="`로그인`"
+    :onClick="onLoginLinkClick"
+    :onCloseModal="onCloseModal"
+    v-if="!user"
+  ></InfoModal>
+
   <div class="container">
     <Transition name="slide-fade">
       <userSettingModal :onModalOpen="onModalOpen" v-if="modalShow" />
     </Transition>
 
-    <div class="myPage-header">
-      <font-awesome-icon :icon="['fas', 'gear']" @click="onModalOpen" />
-    </div>
-
-    <div class="section">
-      <div class="user-info-wrap">
-        <img
-          class="user-image"
-          src="https://post-phinf.pstatic.net/MjAyMjA3MjJfMTk2/MDAxNjU4NDcyMTk2NTcw.jZoVZZWQgyt0XMrxEMpHPVChhKRS9tOx-Cdwn2Jee68g.l-3xnhNzAuLwO4pa-0gZf5hs5zzfEtKuPtVHM29gcxog.JPEG/220721_%EC%97%90%EC%8A%A4%ED%8C%8C_%EC%B9%B4%EB%A6%AC%EB%82%98_3.jpg?type=w800_q75"
-          alt=""
-        />
+    <div v-if="!modalShow">
+      <div class="myPage-header">
+        <font-awesome-icon :icon="['fas', 'gear']" @click="onModalOpen" />
       </div>
-      <div class="user-record-wrap">
-        <div>
-          <p>0</p>
-          <p class="user-record-text">기록</p>
+
+      <div class="section">
+        <div class="user-info-wrap">
+          <img
+            class="user-image"
+            src="https://post-phinf.pstatic.net/MjAyMjA3MjJfMTk2/MDAxNjU4NDcyMTk2NTcw.jZoVZZWQgyt0XMrxEMpHPVChhKRS9tOx-Cdwn2Jee68g.l-3xnhNzAuLwO4pa-0gZf5hs5zzfEtKuPtVHM29gcxog.JPEG/220721_%EC%97%90%EC%8A%A4%ED%8C%8C_%EC%B9%B4%EB%A6%AC%EB%82%98_3.jpg?type=w800_q75"
+            alt=""
+          />
         </div>
-        <span class="line"></span>
-        <div>
-          <p>0</p>
-          <p class="user-record-text">팔로워</p>
-        </div>
-        <span class="line"></span>
-        <div>
-          <p>0</p>
-          <p class="user-record-text">팔로잉</p>
+        <div class="user-record-wrap">
+          <div>
+            <p>0</p>
+            <p class="user-record-text">기록</p>
+          </div>
+          <span class="line"></span>
+          <div>
+            <p>0</p>
+            <p class="user-record-text">팔로워</p>
+          </div>
+          <span class="line"></span>
+          <div>
+            <p>0</p>
+            <p class="user-record-text">팔로잉</p>
+          </div>
         </div>
       </div>
-    </div>
 
-    <div class="user-name">센스있는오리139</div>
+      <div class="user-name">센스있는오리139</div>
 
-    <header class="taps-wrap">
-      <ul class="taps">
-        <li
-          :class="{ active: currentTapName === '' }"
-          class="tap"
-          @click="onTapChange && onTapChange('')"
-        >
-          보드
-        </li>
-        <li
-          :class="{ active: currentTapName === '컬렉션' }"
-          class="tap"
-          @click="onTapChange && onTapChange('컬렉션')"
-        >
-          컬렉션
-        </li>
-      </ul>
-    </header>
+      <header class="taps-wrap">
+        <ul class="taps">
+          <li
+            :class="{ active: currentTapName === '' }"
+            class="tap"
+            @click="onTapChange && onTapChange('')"
+          >
+            보드
+          </li>
+          <li
+            :class="{ active: currentTapName === '컬렉션' }"
+            class="tap"
+            @click="onTapChange && onTapChange('컬렉션')"
+          >
+            컬렉션
+          </li>
+        </ul>
+      </header>
 
-    <div class="section">
-      <PostList />
+      <div class="section">
+        <PostList />
+      </div>
     </div>
   </div>
 </template>
 
 <style lang="scss" scoped>
 .container {
+  position: relative;
+  width: 100%;
   max-width: 40rem;
   margin: 0 auto;
   padding: 1rem;

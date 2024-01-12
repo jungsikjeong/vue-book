@@ -42,8 +42,8 @@ const slides = ref([
 
 const currentSlide = ref(slides.value[0]);
 
-const updateCurrentSlide = (e: any) => {
-  currentSlide.value = slides.value[e.activeIndex];
+const onUpdateCurrentSlide = (e: any) => {
+  currentSlide.value = slides.value[e.realIndex];
 };
 </script>
 
@@ -67,7 +67,7 @@ const updateCurrentSlide = (e: any) => {
           '--swiper-pagination-bullet-size': '5px',
           '--swiper-pagination-bullet-horizontal-gap': '5px',
         }"
-        @slide-change="(e) => updateCurrentSlide(e)"
+        @slide-change="(e) => onUpdateCurrentSlide(e)"
         class="mySwiper"
       >
         <div class="label">에디터's Pick</div>

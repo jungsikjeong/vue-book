@@ -2,7 +2,9 @@
 import { ref } from 'vue';
 import { Swiper, SwiperSlide } from 'swiper/vue';
 import { Navigation, Pagination, Autoplay } from 'swiper/modules';
+import router from '@/router';
 
+import KakaoLoginButton from '@/components/social-login/KakaoLoginButton.vue';
 import 'swiper/swiper-bundle.css';
 import 'swiper/css';
 import 'swiper/css/navigation';
@@ -32,8 +34,14 @@ const slides = ref([
 
 const currentSlide = ref(slides.value[0]);
 
-const updateCurrentSlide = (e: any) => {
+const onUpdateCurrentSlide = (e: any) => {
   currentSlide.value = slides.value[e.realIndex];
+};
+
+// 둘러보기 버튼을 눌렀을때 설정
+const onCustomerClick = () => {
+  localStorage.setItem('customer', 'true');
+  router.push('/');
 };
 </script>
 
@@ -54,7 +62,7 @@ const updateCurrentSlide = (e: any) => {
         clickable: false,
       }"
       :autoplay="{ delay: 2500, disableOnInteraction: false }"
-      @slideChange="updateCurrentSlide"
+      @slideChange="onUpdateCurrentSlide"
       :threshold="0.01"
       :style="{
         '--swiper-pagination-color': 'black',
@@ -72,18 +80,19 @@ const updateCurrentSlide = (e: any) => {
     </swiper>
 
     <div class="section">
-      <img
-        class="pointer"
-        src="../../public/image/kakao_login_btn.png"
-        alt=""
-      />
+      <KakaoLoginButton></KakaoLoginButton>
       <br />
-      <p class="text pointer">둘러보기</p>
+      <p class="text pointer" @click="onCustomerClick">둘러보기</p>
     </div>
   </div>
 </template>
 
 <style lang="scss" scoped>
+@media screen and (min-width: 480px) {
+  .container {
+    padding-top: 10rem !important;
+  }
+}
 .container {
   max-width: 40rem;
   margin: 0 auto;

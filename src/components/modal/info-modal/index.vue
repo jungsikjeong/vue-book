@@ -4,7 +4,9 @@ import { defineProps } from 'vue';
 const props = defineProps({
   title: String,
   content: String,
-  onLogout: Function,
+  butName: String,
+  onClick: Function,
+  onCloseModal: Function,
 });
 </script>
 
@@ -15,8 +17,10 @@ const props = defineProps({
       <p class="content">{{ props.content }}</p>
 
       <div class="button-wrap">
-        <button @click="props.onLogout">취소</button>
-        <button @click="props.onLogout">로그아웃</button>
+        <button @click="props.onCloseModal">취소</button>
+        <button @click="props.onClick">
+          {{ butName }}
+        </button>
       </div>
     </div>
   </div>
@@ -30,16 +34,16 @@ const props = defineProps({
   justify-content: center;
   align-items: center;
   background-color: rgba(0, 0, 0, 0.4);
-  position: absolute;
-  transform: translate(-50%, -50%);
-  top: 50%;
-  left: 50%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
   z-index: 10;
   color: $black-color;
 }
 
 .wrapper {
-  width: 80%;
+  width: 330px;
   border-radius: 12px;
   padding: 1rem 3rem;
   background-color: $white-color;
@@ -53,6 +57,7 @@ const props = defineProps({
   margin-top: 0.5rem;
   text-align: center;
   letter-spacing: -0.1rem;
+  font-weight: 400;
 }
 
 .button-wrap {

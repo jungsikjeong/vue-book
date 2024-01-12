@@ -1,20 +1,35 @@
 <script setup lang="ts">
 import { defineProps, ref } from 'vue';
+import router from '@/router';
+
 import ProfileEditView from '@/views/ProfileEditView.vue';
 import InfoModal from '../info-modal/index.vue';
+import { getAuth, signOut } from 'firebase/auth';
+import { app } from '@/firebaseApp';
 
+const auth = getAuth(app);
 const props = defineProps({ onModalOpen: Function });
-
 const profileViewState = ref(false);
-const userInfoState = ref(false);
+const isUserInfoModal = ref(false);
 
-function onProfileView() {
+const onProfileView = () => {
   profileViewState.value = !profileViewState.value;
-}
+};
 
-function onLogout() {
-  userInfoState.value = !userInfoState.value;
-}
+const onLogout = async () => {
+  await signOut(auth);
+  isUserInfoModal.value = false;
+  localStorage.setItem('current-page', JSON.stringify(0));
+  router.push('/');
+};
+
+const onOpenModal = () => {
+  isUserInfoModal.value = true;
+};
+
+const onCloseModal = () => {
+  isUserInfoModal.value = false;
+};
 </script>
 
 <template>
@@ -28,8 +43,10 @@ function onLogout() {
     <InfoModal
       :title="`로그아웃`"
       :content="`로그아웃 하시겠어요?`"
-      :onLogout="onLogout"
-      v-if="userInfoState"
+      :butName="`로그아웃`"
+      :onClick="onLogout"
+      :onCloseModal="onCloseModal"
+      v-if="isUserInfoModal"
     />
 
     <div class="header" v-if="!profileViewState">
@@ -54,7 +71,7 @@ function onLogout() {
       <li class="line"></li>
 
       <li class="item m-1">
-        <span class="pointer" @click="onLogout">로그아웃</span>
+        <span class="pointer" @click="onOpenModal">로그아웃</span>
       </li>
     </ul>
   </div>
@@ -62,13 +79,13 @@ function onLogout() {
 
 <style lang="scss" scoped>
 .container {
-  position: absolute;
+  position: absolute !important;
   top: 0;
+  left: 0;
   bottom: 0;
   z-index: 10;
   background-color: white;
-  width: 40rem;
-  height: 100vh;
+
   // 최소 너비 600px일 때
   @media (min-width: 600px) {
     padding: 1rem 0 !important;

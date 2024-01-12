@@ -6,8 +6,10 @@ import PostList from '@/components/post-list/index.vue';
 import router from '@/router';
 
 onMounted(() => {
-  const isLocalUser = localStorage.getItem('user');
-  if (!isLocalUser) {
+  const isUser = localStorage.getItem('user');
+  const isCustomer = localStorage.getItem('customer');
+
+  if (!isUser && !isCustomer) {
     router.push('/login');
   }
 });
