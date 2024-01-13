@@ -1,13 +1,10 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import { useStore } from 'vuex';
+import { defineProps } from 'vue';
 import router from '@/router';
 
 import InfoModal from '../components/modal/info-modal/index.vue';
 
-const store = useStore();
-
-const user = ref(store.getters['userStore/getUser']);
+const props = defineProps(['user']);
 
 const onLoginLinkClick = () => {
   router.push('/login');
@@ -25,10 +22,10 @@ const onCloseModal = () => {
     :butName="`로그인`"
     :onClick="onLoginLinkClick"
     :onCloseModal="onCloseModal"
-    v-if="!user"
+    v-if="!props?.user"
   ></InfoModal>
 
-  <div class="container" v-if="user">
+  <div class="container" v-if="props?.user">
     <header class="header">알림</header>
 
     <div class="not-found">

@@ -2,7 +2,7 @@
 import { defineProps, ref } from 'vue';
 import router from '@/router';
 
-import ProfileEditView from '@/views/ProfileEditView.vue';
+import ProfileEdit from '../../../components/my-page/ProfileEdit.vue';
 import InfoModal from '../info-modal/index.vue';
 import { getAuth, signOut } from 'firebase/auth';
 import { app } from '@/firebaseApp';
@@ -18,8 +18,8 @@ const onProfileView = () => {
 
 const onLogout = async () => {
   await signOut(auth);
+  localStorage.removeItem('user');
   isUserInfoModal.value = false;
-  localStorage.setItem('current-page', JSON.stringify(0));
   router.push('/');
 };
 
@@ -34,7 +34,7 @@ const onCloseModal = () => {
 
 <template>
   <div class="container">
-    <ProfileEditView
+    <ProfileEdit
       v-if="profileViewState"
       :profileViewState="profileViewState"
       :onProfileView="onProfileView"

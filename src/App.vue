@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, provide, onMounted } from 'vue';
+import { onMounted, watchEffect, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { useStore } from 'vuex';
 
@@ -7,29 +7,25 @@ import Header from '@/components/Header.vue';
 import Footer from '@/components/footer/index.vue';
 
 const route = useRoute();
-let currentTapName = ref('');
+const store = useStore();
+const user = ref(store.getters['userStore/getUser']);
 
-const onTapChange = (name: string) => {
-  currentTapName.value = name;
-};
+onMounted(async () => {
+  watchEffect(() => {
+    // 로그아웃했을때를 대비해서
+    const newUser = store.getters['userStore/getUser'];
+    user.value = newUser;
+  });
 
-provide('currentTapName', { currentTapName, onTapChange });
-
-onMounted(() => {
-  const store = useStore();
-  store.dispatch('userStore/initAuth');
+  await store.dispatch('userStore/initAuth');
 });
 </script>
 
 <template>
-  <Header
-    :currentTapName="currentTapName"
-    :onTapChange="onTapChange"
-    v-if="route.path === '/'"
-  ></Header>
+  <Header v-if="route.path === '/' || route.path === '/following'"></Header>
 
   <div class="container">
-    <router-view></router-view>
+    <router-view :user="user"></router-view>
     <Footer v-if="route.path !== '/login'"></Footer>
   </div>
 </template>

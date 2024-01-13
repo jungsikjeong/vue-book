@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { inject, ref } from 'vue';
+import { ref, defineProps } from 'vue';
+
 import router from '@/router';
-import { useStore } from 'vuex';
 
 import userSettingModal from '../components/modal/user-setting-modal/index.vue';
 import PostList from '../components/my-page/post-list.vue';
@@ -9,22 +9,13 @@ import InfoModal from '../components/modal/info-modal/index.vue';
 
 // TODO 유저의 기록,팔로워,팔로잉 숫자가 1이상이면 텍스트색상 굵게
 
-interface MyPageViewProps {
-  currentTapName: string;
-  // eslint-disable-next-line no-unused-vars
-  onTapChange: (name: string) => void;
-}
-
-const store = useStore();
-
-const user = ref(store.getters['userStore/getUser']);
-
-const { currentTapName, onTapChange } = inject<MyPageViewProps>(
-  'currentTapName',
-  { currentTapName: '', onTapChange: () => {} }
-);
-
+const currentTapName = ref('');
 const modalShow = ref(false);
+const props = defineProps(['user']);
+
+const onTapChange = (name: string) => {
+  currentTapName.value = name;
+};
 
 const onModalOpen = () => {
   modalShow.value = !modalShow.value;
@@ -46,10 +37,10 @@ const onCloseModal = () => {
     :butName="`로그인`"
     :onClick="onLoginLinkClick"
     :onCloseModal="onCloseModal"
-    v-if="!user"
+    v-if="!props?.user"
   ></InfoModal>
 
-  <div class="container" v-if="user">
+  <div class="container" v-if="props?.user">
     <Transition name="slide-fade">
       <userSettingModal :onModalOpen="onModalOpen" v-if="modalShow" />
     </Transition>

@@ -1,33 +1,20 @@
-<script setup lang="ts">
-import { defineProps } from 'vue';
-
-const props = defineProps({
-  currentTapName: String,
-  onTapChange: Function,
-});
-</script>
+<script setup lang="ts"></script>
 
 <template>
   <header class="header">
-    <div class="logo" @click="onTapChange && onTapChange('')">
+    <div class="logo">
       <router-link to="/"><span>Vue</span>Book</router-link>
     </div>
 
     <ul class="taps">
-      <li
-        :class="{ active: props.currentTapName === '' }"
-        class="tap"
-        @click="onTapChange && onTapChange('')"
-      >
-        <router-link to="/"> 추천 </router-link>
-      </li>
-      <li
-        :class="{ active: props.currentTapName === '팔로잉' }"
-        class="tap"
-        @click="onTapChange && onTapChange('팔로잉')"
-      >
-        <router-link to="/following"> 팔로잉 </router-link>
-      </li>
+      <router-link to="/">
+        <li class="tap" :class="{ active: $route.path === '/' }">추천</li>
+      </router-link>
+      <router-link to="/following">
+        <li class="tap" :class="{ active: $route.path === '/following' }">
+          팔로잉
+        </li>
+      </router-link>
     </ul>
   </header>
 </template>
@@ -63,11 +50,10 @@ const props = defineProps({
     padding-bottom: 0.2rem;
     cursor: pointer;
   }
-
-  .active {
-    font-weight: 600;
-    padding-bottom: 0.2rem;
-    border-bottom: 2px solid black;
-  }
+}
+.active {
+  font-weight: 600;
+  padding-bottom: 0.2rem;
+  border-bottom: 2px solid black;
 }
 </style>

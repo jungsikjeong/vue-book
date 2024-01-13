@@ -1,29 +1,17 @@
 <script setup lang="ts">
-import { inject, ref } from 'vue';
+import { defineProps } from 'vue';
 import router from '@/router';
 
 import InfoModal from '../components/modal/info-modal/index.vue';
-import { useStore } from 'vuex';
 
-const store = useStore();
-const user = ref(store.getters['userStore/getUser']);
-
-interface FollowingProps {
-  // eslint-disable-next-line no-unused-vars
-  onTapChange: (name: string) => void;
-}
-
-const { onTapChange } = inject<FollowingProps>('currentTapName', {
-  onTapChange: () => {},
-});
+const props = defineProps(['user']);
 
 const onLoginLinkClick = () => {
   router.push('/login');
 };
 
 const onCloseModal = () => {
-  router.go(-1);
-  onTapChange('');
+  router.push('/');
 };
 </script>
 <template>
@@ -33,10 +21,15 @@ const onCloseModal = () => {
     :butName="`로그인`"
     :onClick="onLoginLinkClick"
     :onCloseModal="onCloseModal"
-    v-if="!user"
+    v-if="!props?.user"
   ></InfoModal>
 
-  팔로잉
+  <div v-if="props?.user" class="following-wrapper">팔로잉</div>
 </template>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.following-wrapper {
+  width: 40rem;
+  margin: 0 auto;
+}
+</style>
