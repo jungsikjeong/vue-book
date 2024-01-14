@@ -12,14 +12,14 @@ const modules = ref([Navigation, Pagination]);
 const slides = ref([
   {
     id: 1,
-    src: 'https://picsum.photos/414/414?random=1',
+    src: 'https://i.namu.wiki/i/zcQZgotMjmeR_sH4EaX0QEox_7-pASdXxpIwWfYO5cS4Vee2U8IzyKTyw_V5kbXEYMT1-8hWHMh4fNMa3R_Zog.gif',
     title: '일주일의 커피♨',
     content: '하루 한 끼,나를 위한 테이블 기록',
     user: 'Aine님이 새벽에 하는 생각들',
   },
   {
     id: 2,
-    src: 'https://picsum.photos/414/414?random=2',
+    src: 'https://cdn.kagit.kr/2023/08/01/webp_image_90f99b7c8d.webp',
     title: '일주일의 커피♨2',
     content: '하루 한 끼,나를 위한 테이블 기록',
     user: 'Aine님이 새벽에 하는 생각들',
@@ -140,13 +140,15 @@ const onUpdateCurrentSlide = (e: any) => {
   left: 50%;
   right: 50%;
   transform: translate(-50%, -50%);
-  height: 433px;
-  width: 100%;
   max-width: 40rem;
+  width: 100%;
+  height: 433px;
   margin: 0 auto;
 
   .image-wrap {
     position: relative;
+    width: 100%;
+    height: 100%;
 
     img {
       width: 100%;

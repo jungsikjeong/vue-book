@@ -1,16 +1,48 @@
 <script setup lang="ts">
-import { defineProps } from 'vue';
+import { db } from '@/firebaseApp';
+import { doc, getDoc, updateDoc } from 'firebase/firestore';
+
+import { defineProps, onMounted, ref } from 'vue';
+import { useStore } from 'vuex';
+
+const store = useStore();
+const user = ref('') as any;
+const displayName = ref('');
+const description = ref('');
 
 const props = defineProps({
   profileViewState: Boolean,
   onProfileView: Function,
 });
 
-function onSubmit() {
-  if (props?.onProfileView) {
-    props.onProfileView();
+const onSubmit = async () => {
+  if (props?.onProfileView && user.value) {
+    try {
+      const userRef = doc(db, 'users', user.value.uid);
+
+      await updateDoc(userRef, {
+        displayName: displayName.value.trim() || user.value.displayName,
+        description: description.value || user.value.description || '',
+      });
+      alert('프로필 수정완료');
+      props.onProfileView();
+    } catch (error) {
+      alert('요청에 실패했습니다..');
+      console.log(error);
+    }
   }
-}
+};
+onMounted(async () => {
+  const userInfo = store.getters['userStore/getUser'];
+
+  if (userInfo) {
+    const docRef = doc(db, 'users', userInfo.uid);
+    const docSnap = await getDoc(docRef);
+    user.value = docSnap.data();
+    displayName.value = user.value.displayName;
+    description.value = user.value.description;
+  }
+});
 </script>
 
 <template>
@@ -45,17 +77,23 @@ function onSubmit() {
     <p class="user-login-info">카카오 간편 로그인 유저</p>
   </div>
 
-  <form class="submit-form" @click="onSubmit">
+  <form class="submit-form">
     <label for="nickname">닉네임<span class="require-icon">*</span></label>
     <input
       type="text"
       id="nickname"
       name="nickname"
-      placeholder="센스있는오리139"
+      :placeholder="displayName"
+      @input="(e:any)=>displayName=e.target&&e.target.value"
     />
 
     <label for="description">설명</label>
-    <textarea id="description" name="description"></textarea>
+    <textarea
+      id="description"
+      name="description"
+      :placeholder="description"
+      @input="(e:any)=>description=e.target&&e.target.value"
+    ></textarea>
   </form>
 </template>
 

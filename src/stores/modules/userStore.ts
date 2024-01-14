@@ -1,5 +1,6 @@
-import { app } from '@/firebaseApp';
-import { User, getAuth, onAuthStateChanged } from 'firebase/auth';
+import { app, db } from '@/firebaseApp';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { doc, getDoc } from 'firebase/firestore';
 
 const auth = getAuth(app);
 
@@ -11,17 +12,24 @@ const userStore = {
   mutations: {
     setUser(state: any, user: any) {
       localStorage.setItem('user', JSON.stringify(user));
-
       state.user = user;
     },
   },
   actions: {
-    initAuth({ commit }: any) {
-      return new Promise((resolve) => {
-        onAuthStateChanged(auth, (user) => {
-          commit('setUser', user);
+    async initAuth({ commit }: any) {
+      return new Promise<void>((resolve) => {
+        onAuthStateChanged(auth, async (user) => {
+          if (user) {
+            const userRef = doc(db, 'users', user.uid);
+            const oldUser = await getDoc(userRef);
 
-          resolve(user);
+            if (oldUser.exists()) {
+              return commit('setUser', oldUser.data());
+            }
+          }
+
+          commit('setUser', user);
+          resolve();
         });
       });
     },
@@ -36,3 +44,10 @@ const userStore = {
 };
 
 export default userStore;
+
+// if (user) {
+//   const userRef = doc(db, 'users', user.uid);
+
+//   const oldUser = await getDoc(userRef);
+//   console.log(oldUser.data());
+// }

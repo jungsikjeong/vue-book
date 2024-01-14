@@ -56,8 +56,8 @@ export const featUserRegister = async (kakaoAuth: any) => {
 
     await setDoc(doc(db, 'users', userCredential.user.uid), {
       email: kakaoAuth.data.kakao_account.email,
-      nickname: kakaoAuth.data.kakao_account.profile.nickname,
-      profile_image_url: kakaoAuth.data.kakao_account.profile.profile_image_url,
+      displayName: kakaoAuth.data.kakao_account.profile.nickname,
+      photoURL: kakaoAuth.data.kakao_account.profile.profile_image_url,
       likeCount: 0,
       postCount: 0,
       uid: userCredential.user.uid,

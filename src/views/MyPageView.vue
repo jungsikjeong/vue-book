@@ -37,10 +37,10 @@ const onCloseModal = () => {
     :butName="`로그인`"
     :onClick="onLoginLinkClick"
     :onCloseModal="onCloseModal"
-    v-if="!props?.user"
+    v-if="!props.user"
   ></InfoModal>
 
-  <div class="container" v-if="props?.user">
+  <div class="container" v-if="props.user">
     <Transition name="slide-fade">
       <userSettingModal :onModalOpen="onModalOpen" v-if="modalShow" />
     </Transition>
@@ -52,11 +52,7 @@ const onCloseModal = () => {
 
       <div class="section">
         <div class="user-info-wrap">
-          <img
-            class="user-image"
-            src="https://post-phinf.pstatic.net/MjAyMjA3MjJfMTk2/MDAxNjU4NDcyMTk2NTcw.jZoVZZWQgyt0XMrxEMpHPVChhKRS9tOx-Cdwn2Jee68g.l-3xnhNzAuLwO4pa-0gZf5hs5zzfEtKuPtVHM29gcxog.JPEG/220721_%EC%97%90%EC%8A%A4%ED%8C%8C_%EC%B9%B4%EB%A6%AC%EB%82%98_3.jpg?type=w800_q75"
-            alt=""
-          />
+          <img class="user-image" :src="props.user?.photoURL" alt="" />
         </div>
         <div class="user-record-wrap">
           <div>
@@ -76,7 +72,12 @@ const onCloseModal = () => {
         </div>
       </div>
 
-      <div class="user-name">센스있는오리139</div>
+      <div
+        class="user-name"
+        :class="{ userStyle: props.user?.displayName?.length <= 3 }"
+      >
+        {{ props.user?.displayName }}
+      </div>
 
       <header class="taps-wrap">
         <ul class="taps">
@@ -174,6 +175,11 @@ const onCloseModal = () => {
 .user-name {
   margin: 1rem 0;
   font-weight: bold;
+  width: 200px;
+}
+.userStyle {
+  width: 65px;
+  text-align: center;
 }
 .taps-wrap {
   border-bottom: 1px solid #eee;
