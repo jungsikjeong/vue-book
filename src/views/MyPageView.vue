@@ -6,10 +6,10 @@ import router from '@/router';
 import userSettingModal from '../components/modal/user-setting-modal/index.vue';
 import PostList from '../components/my-page/post-list.vue';
 import InfoModal from '../components/modal/info-modal/index.vue';
-
+import Tab from '../components/tab/index.vue';
 // TODO 유저의 기록,팔로워,팔로잉 숫자가 1이상이면 텍스트색상 굵게
 
-const currentTapName = ref('');
+const currentTapName = ref('기록');
 const modalShow = ref(false);
 const props = defineProps(['user']);
 
@@ -79,24 +79,11 @@ const onCloseModal = () => {
         {{ props.user?.displayName }}
       </div>
 
-      <header class="taps-wrap">
-        <ul class="taps">
-          <li
-            :class="{ active: currentTapName === '' }"
-            class="tap"
-            @click="onTapChange && onTapChange('')"
-          >
-            보드
-          </li>
-          <li
-            :class="{ active: currentTapName === '컬렉션' }"
-            class="tap"
-            @click="onTapChange && onTapChange('컬렉션')"
-          >
-            컬렉션
-          </li>
-        </ul>
-      </header>
+      <Tab
+        :currentTapName="currentTapName"
+        :onTapChange="onTapChange"
+        :names="['기록', '컬렉션']"
+      />
 
       <div class="section">
         <PostList />
@@ -180,27 +167,5 @@ const onCloseModal = () => {
 .userStyle {
   width: 65px;
   text-align: center;
-}
-.taps-wrap {
-  border-bottom: 1px solid #eee;
-}
-.taps {
-  position: relative;
-  display: flex;
-  padding: 0 1rem;
-  width: 100%;
-  font-size: 0.875rem;
-
-  .tap {
-    padding: 0 0.5rem;
-    padding-bottom: 0.2rem;
-    cursor: pointer;
-  }
-
-  .active {
-    font-weight: 600;
-    padding-bottom: 0.2rem;
-    border-bottom: 2px solid black;
-  }
 }
 </style>

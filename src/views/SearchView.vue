@@ -1,10 +1,20 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue';
+import { dummyUsersFn, dummyPostsFn } from '../assets/dummyData';
+
 import SubTitle from '../components/sub-title/index.vue';
+import Tab from '../components/tab/index.vue';
+import ResultList from '../components/search/result-list.vue';
 // TODO 검색어 클릭시 바로 검색되게끔
 
 const focusState = ref(false);
 const inputState = ref('');
+const isOnsearch = ref(false); // 검색어를 누르거나, 엔터를누르면 true가됨
+const currentTapName = ref('유저들');
+
+const dummyUsers = ref(dummyUsersFn());
+const dummyPosts = ref(dummyPostsFn());
+
 
 const popularSearch = [
   '운동',
@@ -23,37 +33,67 @@ let getKeyword = ref(
   JSON.parse(localStorage.getItem('search-keyword') || '[]')
 );
 
-function onSubmit(e: any) {
+const onTapChange = (name: string) => {
+  currentTapName.value = name;
+};
+
+const onSubmit = (e: any) => {
   const searchTextValue = e.target.value;
 
   if (searchTextValue) {
     const copyGetKeyword = [...getKeyword.value];
 
+    // 중복 검색어 제거
+    const index = copyGetKeyword.indexOf(inputState.value);
+
+    if (index !== -1) {
+      copyGetKeyword.splice(index, 1);
+    }
+
     copyGetKeyword.unshift(searchTextValue);
 
     localStorage.setItem('search-keyword', JSON.stringify(copyGetKeyword));
     getKeyword.value = copyGetKeyword;
+
+    isOnsearch.value = true;
     e.target.value = '';
   }
-}
+};
 
-function onSearchCancel() {
+const onSearchCancel = () => {
   inputState.value = '';
-}
+  isOnsearch.value = false;
+};
 
 // 검색어 클릭
-function onSearchWordClick(e: any) {
+const onSearchWordClick = (e: any) => {
   inputState.value = e.target.innerText;
-}
+
+  const copyGetKeyword = [...getKeyword.value];
+
+  // 중복 검색어 제거
+  const index = copyGetKeyword.indexOf(inputState.value);
+
+  if (index !== -1) {
+    copyGetKeyword.splice(index, 1);
+  }
+
+  copyGetKeyword.unshift(inputState.value);
+
+  localStorage.setItem('search-keyword', JSON.stringify(copyGetKeyword));
+  getKeyword.value = copyGetKeyword;
+  isOnsearch.value = true;
+};
 
 // 검색어 전체 지우기
-function onAllRemove() {
+const onAllRemove = () => {
   localStorage.setItem('search-keyword', '');
   getKeyword.value = '';
   inputState.value = '';
-}
+  isOnsearch.value = false;
+};
 
-function onClickOutside(e: any) {
+const onClickOutside = (e: any) => {
   if (e.target.classList.contains('search-input') || inputState.value !== '') {
     // 검색창을 클릭시
     focusState.value = true;
@@ -61,7 +101,7 @@ function onClickOutside(e: any) {
     // 검색창외에 다른 곳 클릭시
     focusState.value = false;
   }
-}
+};
 
 onMounted(() => {
   window.addEventListener('click', onClickOutside);
@@ -74,27 +114,45 @@ onUnmounted(() => {
 
 <template>
   <div class="container">
-    <input
-      type="text"
-      placeholder="&#xF002; 뷰북의 기록들을 검색해보세요"
-      :class="{ active: focusState }"
-      class="search-input"
-      @keydown.enter="onSubmit"
-      v-model="inputState"
-    />
-    <button
-      class="cancel-btn"
-      :class="{ 'active-cancel-btn': focusState }"
-      @click="onSearchCancel"
-    >
-      취소
-    </button>
+    <section class="wrapper" :class="{ fixed: isOnsearch }">
+      <input
+        type="text"
+        placeholder="&#xF002; 뷰북의 기록들을 검색해보세요"
+        :class="{ active: focusState }"
+        class="search-input"
+        @keydown.enter="onSubmit"
+        v-model="inputState"
+      />
+      <button
+        class="cancel-btn"
+        :class="{ 'active-cancel-btn': focusState }"
+        @click="onSearchCancel"
+      >
+        취소
+      </button>
+      <Tab
+        :currentTapName="currentTapName"
+        :onTapChange="onTapChange"
+        :names="['유저들', '기록들']"
+        v-if="isOnsearch"
+        style="margin-top: 1rem"
+      />
+    </section>
 
-    <section class="wrapper" v-if="getKeyword.length > 0">
+    <!-- 검색한 결과물 -->
+    <ResultList
+      v-if="isOnsearch"
+      :dummyUsers="dummyUsers"
+      :dummyPosts="dummyPosts"
+      :currentTapName="currentTapName"
+    />
+
+    <section class="wrapper" v-if="getKeyword.length > 0 && !isOnsearch">
       <div class="flex-box">
         <SubTitle :title="`최근 검색어`"></SubTitle>
         <button class="remove-all-btn" @click="onAllRemove">모두 지우기</button>
       </div>
+
       <ul class="tags">
         <li
           class="tag"
@@ -107,7 +165,7 @@ onUnmounted(() => {
       </ul>
     </section>
 
-    <section class="wrapper">
+    <section class="wrapper" v-if="!isOnsearch">
       <SubTitle :title="`인기 검색어`"></SubTitle>
 
       <ul class="tags">
@@ -125,6 +183,18 @@ onUnmounted(() => {
 </template>
 
 <style lang="scss" scoped>
+.fixed {
+  position: sticky;
+  top: 0rem;
+  margin-top: 0rem !important;
+  max-width: 40rem;
+  background-color: #fff;
+
+  input {
+    margin-top: 1rem;
+  }
+}
+
 .container {
   padding: 1rem;
   max-width: 40rem;
@@ -197,3 +267,4 @@ onUnmounted(() => {
   cursor: pointer;
 }
 </style>
+../assets/dummyData

@@ -19,7 +19,6 @@ onMounted(async () => {
 
   await store.dispatch('userStore/initAuth');
 });
-console.log(user.value);
 </script>
 
 <template>

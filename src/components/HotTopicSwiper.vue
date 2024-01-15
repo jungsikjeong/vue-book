@@ -12,7 +12,7 @@ const modules = ref([Navigation, Pagination]);
 const slides = ref([
   {
     id: 1,
-    src: 'https://i.namu.wiki/i/zcQZgotMjmeR_sH4EaX0QEox_7-pASdXxpIwWfYO5cS4Vee2U8IzyKTyw_V5kbXEYMT1-8hWHMh4fNMa3R_Zog.gif',
+    src: 'https://d25rzgv0ld7qzl.cloudfront.net/media/29709/acdh07k00590658e6a588e55a6ffaad0',
     title: '일주일의 커피♨',
     content: '하루 한 끼,나를 위한 테이블 기록',
     user: 'Aine님이 새벽에 하는 생각들',
