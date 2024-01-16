@@ -8,6 +8,7 @@ import NotificationView from '@/views/NotificationView.vue';
 import MyPageView from '@/views/MyPageView.vue';
 import LoginViewVue from '@/views/LoginView.vue';
 import KakaoCallBackVue from '@/components/social-login/KakaoCallBack.vue';
+import PostDetailView from '@/views/PostDetailView.vue';
 
 const router = createRouter({
   history: createWebHistory(),
@@ -36,6 +37,11 @@ const router = createRouter({
       path: '/writer',
       name: 'Writer',
       component: WriterViewVue,
+    },
+    {
+      path: '/:id/post',
+      name: 'Detail',
+      component: PostDetailView,
     },
     {
       path: '/notification',

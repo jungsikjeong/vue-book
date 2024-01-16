@@ -11,28 +11,28 @@ const modules = ref([Navigation, Pagination]);
 
 const slides = ref([
   {
-    id: 1,
+    id: '1',
     src: 'https://d25rzgv0ld7qzl.cloudfront.net/media/29709/acdh07k00590658e6a588e55a6ffaad0',
     title: '일주일의 커피♨',
     content: '하루 한 끼,나를 위한 테이블 기록',
     user: 'Aine님이 새벽에 하는 생각들',
   },
   {
-    id: 2,
+    id: '2',
     src: 'https://cdn.kagit.kr/2023/08/01/webp_image_90f99b7c8d.webp',
     title: '일주일의 커피♨2',
     content: '하루 한 끼,나를 위한 테이블 기록',
     user: 'Aine님이 새벽에 하는 생각들',
   },
   {
-    id: 3,
+    id: ' 3',
     src: 'https://picsum.photos/414/414?random=3',
     title: '일주일의 커피♨3',
     content: '하루 한 끼,나를 위한 테이블 기록',
     user: 'Aine님이 새벽에 하는 생각들',
   },
   {
-    id: 4,
+    id: ' 4',
     src: 'https://picsum.photos/414/414?random=4',
     title: '일주일의 커피♨4',
     content: '하루 한 끼,나를 위한 테이블 기록',
@@ -73,15 +73,19 @@ const onUpdateCurrentSlide = (e: any) => {
         <div class="label">에디터's Pick</div>
 
         <swiper-slide v-for="slide in slides" :key="slide.id">
-          <div class="image-wrap">
-            <img :src="slide.src" />
-          </div>
+          <router-link :to="'/' + slide.id + '/post'">
+            <div class="image-wrap">
+              <img :src="slide.src" />
+            </div>
+          </router-link>
         </swiper-slide>
       </swiper>
 
       <div class="text-wrap">
-        <h3 class="title">{{ currentSlide.title }}</h3>
-        <p class="content">{{ currentSlide.content }}</p>
+        <router-link :to="'/' + currentSlide.id + '/post'">
+          <h3 class="title">{{ currentSlide.title }}</h3>
+          <p class="content">{{ currentSlide.content }}</p>
+        </router-link>
 
         <div class="user-content">
           <img
@@ -131,7 +135,6 @@ const onUpdateCurrentSlide = (e: any) => {
   align-items: end;
   min-height: 520px;
   background-color: $black-color;
-  cursor: pointer;
 }
 
 .swiper {
