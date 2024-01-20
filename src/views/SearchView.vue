@@ -4,7 +4,7 @@ import { dummyUsersFn, dummyPostsFn } from '../assets/dummyData';
 
 import SubTitle from '../components/sub-title/index.vue';
 import Tab from '../components/tab/index.vue';
-import ResultList from '../components/search/result-list.vue';
+import ResultList from '../components/search/Result-list.vue';
 // TODO 검색어 클릭시 바로 검색되게끔
 
 const focusState = ref(false);
@@ -14,7 +14,6 @@ const currentTapName = ref('유저들');
 
 const dummyUsers = ref(dummyUsersFn());
 const dummyPosts = ref(dummyPostsFn());
-
 
 const popularSearch = [
   '운동',

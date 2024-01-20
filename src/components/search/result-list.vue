@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { defineProps } from 'vue';
-import UserList from './user-list.vue';
-import PostList from './post-list.vue';
+import UserList from './User-list.vue';
+import PostList from './Post-list.vue';
 
 const props = defineProps({
   dummyUsers: Array as any,

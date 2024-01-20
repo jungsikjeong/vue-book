@@ -2,8 +2,8 @@ import { createRouter, createWebHistory } from 'vue-router';
 
 import HomeView from '../views/HomeView.vue';
 import FollowingView from '../views/FollowingView.vue';
-import SearchViewVue from '@/views/SearchView.vue';
-import WriterViewVue from '@/views/WriterView.vue';
+import SearchView from '@/views/SearchView.vue';
+import WriterView from '@/views/WriterView.vue';
 import NotificationView from '@/views/NotificationView.vue';
 import MyPageView from '@/views/MyPageView.vue';
 import LoginViewVue from '@/views/LoginView.vue';
@@ -31,13 +31,14 @@ const router = createRouter({
     {
       path: '/search',
       name: 'Search',
-      component: SearchViewVue,
+      component: SearchView,
     },
     {
       path: '/writer',
       name: 'Writer',
-      component: WriterViewVue,
+      component: WriterView,
     },
+
     {
       path: '/:id/post',
       name: 'Detail',

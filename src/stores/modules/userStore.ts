@@ -44,10 +44,3 @@ const userStore = {
 };
 
 export default userStore;
-
-// if (user) {
-//   const userRef = doc(db, 'users', user.uid);
-
-//   const oldUser = await getDoc(userRef);
-//   console.log(oldUser.data());
-// }

@@ -18,6 +18,6 @@ const props = defineProps({ title: String, icon: String });
   padding: 0.3rem 0;
   border: 1px solid #eee;
   border-radius: 5px;
-  color: $cloudy-gray;
+  color: $black-color;
 }
 </style>

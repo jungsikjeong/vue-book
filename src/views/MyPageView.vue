@@ -4,7 +4,7 @@ import { ref, defineProps } from 'vue';
 import router from '@/router';
 
 import userSettingModal from '../components/modal/user-setting-modal/index.vue';
-import PostList from '../components/my-page/post-list.vue';
+import PostList from '../components/my-page/Post-list.vue';
 import InfoModal from '../components/modal/info-modal/index.vue';
 import Tab from '../components/tab/index.vue';
 // TODO 유저의 기록,팔로워,팔로잉 숫자가 1이상이면 텍스트색상 굵게

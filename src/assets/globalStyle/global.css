@@ -173,3 +173,14 @@ body {
   background-color: white;
   opacity: 0.5;
 }
+
+.ql-editor {
+  width: 100%;
+  height: 150px !important;
+  border-radius: 5px;
+  border: 1px solid #c0c0c0 !important;
+}
+
+.ql-editor::placeholder {
+  font-size: 0.875rem;
+}

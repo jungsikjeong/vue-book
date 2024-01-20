@@ -10,7 +10,6 @@ onMounted(() => {
     try {
       await fetchKakaoAuth();
 
-      alert('로그인 성공!');
       router.replace('/');
     } catch (error: any) {
       console.log(error);
