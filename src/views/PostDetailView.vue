@@ -1,6 +1,12 @@
 <script setup lang="ts">
+import { onMounted } from 'vue';
+
 import Post from '../components/postDetail/Post.vue';
 import Comment from '../components/postDetail/Comment.vue';
+
+onMounted(() => {
+  window.scrollTo(0, 0);
+});
 </script>
 
 <template>

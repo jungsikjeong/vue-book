@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-// import router from '@/router';
+import router from '@/router';
 import { Images } from '@/types/images.d.ts';
 import { v4 as uuidv4 } from 'uuid';
 import { app, db } from '@/firebaseApp';
@@ -12,11 +12,11 @@ import {
 } from 'firebase/storage';
 import { addDoc, collection } from 'firebase/firestore';
 import { useStore } from 'vuex';
+import { incrementPostCount } from '@/api/post';
 
 import FileForm from './File-form.vue';
 import PostForm from './Post-form.vue';
 import TagInput from './TagInput.vue';
-import router from '@/router';
 
 const store = useStore();
 const storage = getStorage(app);
@@ -126,6 +126,7 @@ const onSubmit = async () => {
         displayName: user?.value.displayName,
       });
 
+      await incrementPostCount();
       alert('게시글 업로드를 완료했습니다.');
       router.push('/');
     }
@@ -148,20 +149,13 @@ onMounted(() => {
       :icon="['fas', 'xmark']"
       class="pointer"
       style="font-size: 1.2rem"
+      @click="router.go(-1)"
     />
     기록하기
 
     <div
       v-if="!isShowFileEdit"
-      @click="
-        {
-          formData.title &&
-            formData.content &&
-            tags.length !== 0 &&
-            imagesFile &&
-            onSubmit;
-        }
-      "
+      @click="onSubmit"
       :class="{
         complete:
           formData.title && formData.content && tags.length !== 0 && imagesFile,

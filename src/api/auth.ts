@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { featUserCheck, featUserLogin, featUserRegister } from './user';
+import { fetchUserCheck, fetchUserLogin, fetchUserRegister } from './user';
 
 export const fetchKakaoAuth = async () => {
   const CODE = new URL(window.location.href).searchParams.get('code');
@@ -33,15 +33,15 @@ export const fetchKakaoAuth = async () => {
       });
 
       if (kakaoAuth.status === 200) {
-        const userExists = await featUserCheck(
+        const userExists = await fetchUserCheck(
           kakaoAuth.data.kakao_account.email
         );
 
         // 유저정보가 있으면, 로그인
-        userExists && featUserLogin(kakaoAuth);
+        userExists && fetchUserLogin(kakaoAuth);
 
         // 유저정보가 없으면, 회원가입후 로그인
-        !userExists && featUserRegister(kakaoAuth);
+        !userExists && fetchUserRegister(kakaoAuth);
       }
     }
   } catch (error: any) {

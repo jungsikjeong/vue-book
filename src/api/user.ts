@@ -17,7 +17,7 @@ import {
 
 const auth = getAuth(app);
 
-export const featUserCheck = async (email: string) => {
+export const fetchUserCheck = async (email: string) => {
   const usersRef = collection(db, 'users');
   const userQuery = query(usersRef, where('email', '==', email));
 
@@ -33,7 +33,7 @@ export const featUserCheck = async (email: string) => {
 };
 
 // 로그인
-export const featUserLogin = async (kakaoAuth: any) => {
+export const fetchUserLogin = async (kakaoAuth: any) => {
   try {
     await signInWithEmailAndPassword(
       auth,
@@ -46,7 +46,7 @@ export const featUserLogin = async (kakaoAuth: any) => {
 };
 
 // 회원가입
-export const featUserRegister = async (kakaoAuth: any) => {
+export const fetchUserRegister = async (kakaoAuth: any) => {
   try {
     const userCredential = await createUserWithEmailAndPassword(
       auth,
@@ -72,4 +72,20 @@ export const featUserRegister = async (kakaoAuth: any) => {
       `회원가입중 에러가 발생했습니다. 다시 시도해주세요 ${error}`
     );
   }
+};
+
+// 유저 정보 조회
+export const fetchUserInfo = async (userId: string) => {
+  const dataArr = [] as any;
+
+  const usersRef = collection(db, 'users');
+
+  const q = query(usersRef, where('uid', '==', userId));
+
+  const querySnapshot = await getDocs(q);
+  querySnapshot.forEach((doc) => {
+    const dataObj = { ...doc.data(), id: doc.id };
+    dataArr.push(dataObj);
+  });
+  return dataArr;
 };

@@ -9,6 +9,7 @@ import MyPageView from '@/views/MyPageView.vue';
 import LoginViewVue from '@/views/LoginView.vue';
 import KakaoCallBackVue from '@/components/social-login/KakaoCallBack.vue';
 import PostDetailView from '@/views/PostDetailView.vue';
+import UserInfoView from '@/views/UserInfoView.vue';
 
 const router = createRouter({
   history: createWebHistory(),
@@ -53,6 +54,11 @@ const router = createRouter({
       path: '/myPage',
       name: 'MyPage',
       component: MyPageView,
+    },
+    {
+      path: '/:id/user',
+      name: 'UserInfo',
+      component: UserInfoView,
     },
     {
       path: '/callback/kakaotalk',

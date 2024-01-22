@@ -1,37 +1,44 @@
 <script setup lang="ts">
-import { defineProps } from 'vue';
+import { ref, defineProps } from 'vue';
 
-const data = defineProps({ postItem: Object });
+const props = defineProps({ postItem: Object });
+const content = ref(props.postItem && props.postItem.content.insert);
+
+console.log(props.postItem && props.postItem.user);
 </script>
 
 <template>
-  <li class="wrapper" v-if="data.postItem">
-    <div class="image-wrap">
-      <img
-        :src="image"
-        :alt="`image${data.postItem.id}`"
-        v-for="image in data.postItem.images"
-        :key="image"
-        class="main-image"
-      />
-    </div>
+  <li class="wrapper" v-if="props.postItem">
+    <router-link :to="'/' + props.postItem.id + '/post'">
+      <div class="image-wrap">
+        <img
+          v-for="image in props.postItem.imageUrl"
+          :src="image.src"
+          :alt="`image${image.src}`"
+          :key="image"
+          class="main-image"
+        />
+      </div>
+    </router-link>
 
     <div class="text-wrap">
-      <h5 class="title">
-        {{ data.postItem.title }}
-      </h5>
-      <p class="content">
-        {{ data.postItem.content }}
-      </p>
+      <router-link :to="'/' + props.postItem.id + '/post'">
+        <h5 props="title">
+          {{ props.postItem.title }}
+        </h5>
+        <p class="content">{{ content }}</p>
+      </router-link>
 
-      <div class="user-wrap">
-        <img
-          src="https://picsum.photos/414/414?random=4"
-          alt=""
-          class="user-image"
-        />
-        <p class="user-name">춤추는기린</p>
-      </div>
+      <router-link :to="'/' + props.postItem.user[0].uid + '/user'">
+        <div class="user-wrap">
+          <img
+            :src="props.postItem.user[0].photoURL"
+            alt=""
+            class="user-image"
+          />
+          <p class="user-name">{{ props.postItem.user[0].displayName }}</p>
+        </div>
+      </router-link>
     </div>
   </li>
 </template>
@@ -41,10 +48,17 @@ const data = defineProps({ postItem: Object });
   width: 48%;
   color: $black-color;
   padding-top: 0rem;
-  cursor: pointer;
+}
+.image-wrap {
+  position: relative;
+  width: 100%;
+  padding-top: 75%;
 }
 
 .main-image {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
