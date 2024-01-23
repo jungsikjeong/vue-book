@@ -1,11 +1,13 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, defineProps } from 'vue';
 import { Swiper, SwiperSlide } from 'swiper/vue';
 import { Navigation, Pagination } from 'swiper/modules';
 
 import 'swiper/swiper-bundle.css';
 import 'swiper/css';
 import 'swiper/css/navigation';
+
+const props = defineProps(['postItem']);
 
 const modules = ref([Navigation, Pagination]);
 const currentPage = ref(1);
@@ -18,7 +20,6 @@ onMounted(() => {
     showMoreBtn.value = true;
   }
 });
-
 const slides = ref([
   {
     id: '1',
@@ -73,17 +74,22 @@ const slides = ref([
     :autoplay="{ delay: 2500, disableOnInteraction: false }"
     class="post-detail-slider"
   >
-    <swiper-slide v-for="slide in slides" :key="slide.id">
+    <swiper-slide
+      v-for="(image, index) in props?.postItem.imageUrl"
+      :key="index"
+    >
       <div class="image-wrap">
-        <img :src="slide.src" />
+        <img :src="image.src" />
       </div>
     </swiper-slide>
-    <div class="pagination">{{ currentPage }}/{{ slides.length }}</div>
+    <div class="pagination">
+      {{ currentPage }}/{{ props?.postItem?.imageUrl?.length }}
+    </div>
   </swiper>
 
   <div class="post-wrap">
-    <h3 class="post-title">마음의 균형찾기</h3>
-    <p class="post-date">1월 13일 토요일</p>
+    <h3 class="post-title">{{ props?.postItem?.title }}</h3>
+    <p class="post-date">{{ props?.postItem.createdAt }}</p>
 
     <div :class="isMoreContent ? 'more-content' : 'post-content'">
       <div
@@ -94,16 +100,18 @@ const slides = ref([
         ... <strong>더보기</strong>
       </div>
 
-      {{ slides[0].content }}
+      {{ props?.postItem?.content?.insert }}
     </div>
 
     <ul class="post-tags">
-      <li class="post-tags__tag">#마균찾</li>
+      <li class="post-tags__tag" v-for="tag in props?.postItem.tags" :key="tag">
+        {{ tag }}
+      </li>
     </ul>
 
     <div class="post-user">
-      <img src="https://pbs.twimg.com/media/F9vT_m7bkAAYXMN.jpg:large" alt="" />
-      잡초
+      <img :src="props?.postItem?.user?.photoURL" alt="" />
+      {{ props?.postItem?.user?.postAuthor }}
     </div>
   </div>
 </template>
@@ -173,6 +181,7 @@ header {
   .post-tags {
     padding: 01.5rem 0;
     display: flex;
+    gap: 5px;
 
     .post-tags__tag {
       font-weight: 600;

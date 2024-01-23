@@ -3,6 +3,7 @@ import { defineProps } from 'vue';
 import router from '@/router';
 
 import InfoModal from '../components/modal/info-modal/index.vue';
+import SubTitle from '../components/sub-title/index.vue';
 
 const props = defineProps(['user']);
 
@@ -24,12 +25,20 @@ const onCloseModal = () => {
     v-if="!props?.user"
   ></InfoModal>
 
-  <div v-if="props?.user" class="following-wrapper">팔로잉</div>
+  <div v-if="props?.user" class="following-wrapper">
+    <div class="not-following">
+      <SubTitle :title="`아직 팔로잉한 유저가 없습니다..`"></SubTitle>
+    </div>
+  </div>
 </template>
 
 <style lang="scss" scoped>
 .following-wrapper {
-  width: 40rem;
+  max-width: 40rem;
   margin: 0 auto;
+}
+
+.not-following {
+  padding: 1rem;
 }
 </style>

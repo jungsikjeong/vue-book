@@ -1,14 +1,21 @@
 <script setup lang="ts">
 import { defineProps, ref } from 'vue';
 import router from '@/router';
+import { getAuth, signOut } from 'firebase/auth';
+import { app } from '@/firebaseApp';
+import { KakaoLogout } from '@/api/auth';
+import { useStore } from 'vuex';
 
 import ProfileEdit from '../../../components/my-page/ProfileEdit.vue';
 import InfoModal from '../info-modal/index.vue';
-import { getAuth, signOut } from 'firebase/auth';
-import { app } from '@/firebaseApp';
+
+const store = useStore();
 
 const auth = getAuth(app);
+
 const props = defineProps({ onModalOpen: Function });
+
+const user = ref(store.getters['userStore/getUser']);
 const profileViewState = ref(false);
 const isUserInfoModal = ref(false);
 
@@ -18,7 +25,11 @@ const onProfileView = () => {
 
 const onLogout = async () => {
   await signOut(auth);
+  await KakaoLogout(user?.value?.snsId);
+
   localStorage.removeItem('user');
+  localStorage.removeItem('kakaoToken');
+
   isUserInfoModal.value = false;
   alert('로그아웃 완료');
   router.push('/');

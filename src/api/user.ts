@@ -58,7 +58,10 @@ export const fetchUserRegister = async (kakaoAuth: any) => {
       email: kakaoAuth.data.kakao_account.email,
       displayName: kakaoAuth.data.kakao_account.profile.nickname,
       photoURL: kakaoAuth.data.kakao_account.profile.profile_image_url,
-      likeCount: 0,
+      snsId: kakaoAuth.data.id,
+      likePost: [],
+      followers: [],
+      following: [],
       postCount: 0,
       uid: userCredential.user.uid,
     });
@@ -76,16 +79,21 @@ export const fetchUserRegister = async (kakaoAuth: any) => {
 
 // 유저 정보 조회
 export const fetchUserInfo = async (userId: string) => {
-  const dataArr = [] as any;
+  try {
+    const dataArr = [] as any;
 
-  const usersRef = collection(db, 'users');
+    const usersRef = collection(db, 'users');
 
-  const q = query(usersRef, where('uid', '==', userId));
+    const q = query(usersRef, where('uid', '==', userId));
 
-  const querySnapshot = await getDocs(q);
-  querySnapshot.forEach((doc) => {
-    const dataObj = { ...doc.data(), id: doc.id };
-    dataArr.push(dataObj);
-  });
-  return dataArr;
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+      const dataObj = { ...doc.data(), id: doc.id };
+      dataArr.push(dataObj);
+    });
+
+    return dataArr;
+  } catch (error) {
+    console.log(error);
+  }
 };

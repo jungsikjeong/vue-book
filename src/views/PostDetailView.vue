@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { onMounted } from 'vue';
 
-import Post from '../components/postDetail/Post.vue';
-import Comment from '../components/postDetail/Comment.vue';
+import PostDetail from '../components/postDetail/index.vue';
 
 onMounted(() => {
   window.scrollTo(0, 0);
@@ -17,9 +16,7 @@ onMounted(() => {
       </button>
     </header>
 
-    <Post />
-
-    <Comment />
+    <PostDetail />
   </div>
 </template>
 

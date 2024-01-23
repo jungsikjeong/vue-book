@@ -6,10 +6,9 @@ import PostList from '@/components/post-list/index.vue';
 import router from '@/router';
 
 const props = defineProps(['user']);
-props;
 
 onMounted(() => {
-  const isUser = localStorage.getItem('user');
+  const isUser = localStorage.getItem('user') || props.user;
   const isCustomer = localStorage.getItem('customer');
 
   if (!isUser && !isCustomer) {

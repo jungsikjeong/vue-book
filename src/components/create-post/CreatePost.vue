@@ -123,7 +123,6 @@ const onSubmit = async () => {
           second: '2-digit',
         }),
         uid: user?.value.uid,
-        displayName: user?.value.displayName,
       });
 
       await incrementPostCount();

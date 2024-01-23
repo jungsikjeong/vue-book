@@ -42,9 +42,46 @@ export const fetchKakaoAuth = async () => {
 
         // 유저정보가 없으면, 회원가입후 로그인
         !userExists && fetchUserRegister(kakaoAuth);
+
+        localStorage.setItem(
+          'kakaoToken',
+          JSON.stringify(res.data.access_token)
+        );
       }
     }
   } catch (error: any) {
     throw new Error(`토큰 에러: ${error}`);
+  }
+};
+
+// 카카오 로그아웃
+export const KakaoLogout = async (id: string) => {
+  try {
+    const token = JSON.parse(localStorage.getItem('kakaoToken') || '');
+
+    if (!token) {
+      console.error('Kakao Token not found in localStorage.');
+      return;
+    }
+
+    const commonHeaders = {
+      'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
+      Authorization: `Bearer ${token}`,
+    };
+
+    const unlinkResponse = await axios.post(
+      'https://kapi.kakao.com/v1/user/unlink',
+      {},
+      { headers: commonHeaders }
+    );
+
+    const logoutData = new URLSearchParams({ target_id: id });
+    await axios.post('https://kapi.kakao.com/v1/user/logout', logoutData, {
+      headers: commonHeaders,
+    });
+
+    console.log('Successfully logged out:', unlinkResponse.data);
+  } catch (error) {
+    console.error('Kakao Logout error:', error);
   }
 };

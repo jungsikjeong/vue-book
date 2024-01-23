@@ -3,6 +3,7 @@ import {
   addDoc,
   collection,
   doc,
+  getDoc,
   getDocs,
   limit,
   orderBy,
@@ -19,15 +20,15 @@ interface fetchPostList {
   count?: number;
 }
 
-export const fetchPostList = async ({ count = 1 }: fetchPostList = {}) => {
+// 전체 게시물 확인
+export const fetchPostList = async ({ count = 6 }: fetchPostList = {}) => {
   const postRef = collection(db, 'posts');
   const dataArr = [] as any;
-  let postCount = null;
 
-  const first = query(postRef, orderBy('createdAt'), limit(1));
+  const first = query(postRef, orderBy('createdAt'), limit(6));
   const documentSnapshots = await getDocs(first);
 
-  if (count === 1) {
+  if (count === 6) {
     documentSnapshots.forEach((doc) => {
       const dataObj = { ...(doc.data() as Post), id: doc.id };
 
@@ -37,15 +38,22 @@ export const fetchPostList = async ({ count = 1 }: fetchPostList = {}) => {
     const userData = [] as any;
 
     const usersRef = collection(db, 'users');
+    if (dataArr.length > 0) {
+      for (const data of dataArr) {
+        const q = query(usersRef, where('uid', '==', data.uid));
 
-    const q = query(usersRef, where('uid', '==', dataArr[0].uid));
+        const userDataQuerySnapshot = await getDocs(q);
 
-    const querySnapshot = await getDocs(q);
-    querySnapshot.forEach((doc) => {
-      const userDataObj = { ...doc.data(), id: doc.id };
-      userData.push(userDataObj);
-    });
-    dataArr[0].user = userData;
+        userDataQuerySnapshot.forEach((doc) => {
+          const userDataObj = { ...doc.data(), id: doc.id };
+          userData.push(userDataObj);
+        });
+
+        for (const data of dataArr) {
+          data.user = userData;
+        }
+      }
+    }
   } else {
     const lastVisible =
       documentSnapshots.docs[documentSnapshots.docs.length - 1];
@@ -58,16 +66,6 @@ export const fetchPostList = async ({ count = 1 }: fetchPostList = {}) => {
       limit(count)
     );
 
-    const postCountRef = collection(db, 'postCount');
-
-    // 데이터 확인
-    const querySnapshotCount = await getDocs(postCountRef);
-
-    querySnapshotCount.forEach((doc) => {
-      const dataObj = { ...doc.data() };
-      postCount = dataObj.count;
-    });
-
     const querySnapshot = await getDocs(next);
 
     querySnapshot.forEach((doc) => {
@@ -79,24 +77,88 @@ export const fetchPostList = async ({ count = 1 }: fetchPostList = {}) => {
 
     const usersRef = collection(db, 'users');
 
-    const q = query(usersRef, where('uid', '==', dataArr[0].uid));
-
-    const userDataQuerySnapshot = await getDocs(q);
-    userDataQuerySnapshot.forEach((doc) => {
-      const userDataObj = { ...doc.data(), id: doc.id };
-      userData.push(userDataObj);
-    });
     for (const data of dataArr) {
-      data.user = userData;
+      const q = query(usersRef, where('uid', '==', data.uid));
+
+      const userDataQuerySnapshot = await getDocs(q);
+
+      userDataQuerySnapshot.forEach((doc) => {
+        const userDataObj = { ...doc.data(), id: doc.id };
+        userData.push(userDataObj);
+      });
+
+      for (const data of dataArr) {
+        data.user = userData;
+      }
     }
   }
 
-  console.log(dataArr);
-
-  return { dataArr, postCount };
+  return dataArr;
 };
 
-// 포스트 전체 갯수
+// 내가 작성한 게시물 확인
+export const fetchMyPostList = async (userId: string) => {
+  const postRef = collection(db, 'posts');
+  const dataArr = [] as any;
+
+  const q = query(postRef, orderBy('createdAt'), where('uid', '==', userId));
+
+  const documentSnapshots = await getDocs(q);
+
+  documentSnapshots.forEach((doc) => {
+    const dataObj = { ...(doc.data() as Post), id: doc.id };
+
+    dataArr.push(dataObj);
+  });
+
+  return dataArr;
+};
+
+// 해당 게시물 확인
+export const fetchDetailPost = async (postId: string) => {
+  const dataArr = [] as any;
+
+  const defRef = doc(db, 'posts', postId);
+  const docSnap = await getDoc(defRef);
+  dataArr.push({ ...(docSnap?.data() as Post), id: docSnap.id });
+
+  return dataArr;
+};
+
+// 내가 좋아요누른 게시물 확인
+export const fetchMyPostLikeList = async (userId: string) => {
+  const userRef = collection(db, 'users');
+  const userDataArr = [] as any;
+
+  const userQuery = query(userRef, where('uid', '==', userId));
+
+  const userSnapshots = await getDocs(userQuery);
+
+  userSnapshots.forEach((doc) => {
+    const dataObj = { ...doc.data(), id: doc.id };
+
+    userDataArr.push(dataObj);
+  });
+
+  console.log(userDataArr[0].likePost);
+
+  // const postRef = collection(db, 'posts');
+  // const dataArr = [] as any;
+
+  // const q = query(postRef, orderBy('createdAt'), where('uid', '==', userId));
+
+  // const documentSnapshots = await getDocs(q);
+
+  // documentSnapshots.forEach((doc) => {
+  //   const dataObj = { ...(doc.data() as Post), id: doc.id };
+
+  //   dataArr.push(dataObj);
+  // });
+
+  // return dataArr;
+};
+
+// 포스트 전체 갯수증가
 export const incrementPostCount = async () => {
   try {
     const postCountRef = collection(db, 'postCount');
@@ -119,4 +181,20 @@ export const incrementPostCount = async () => {
   } catch (error) {
     console.error(error);
   }
+};
+
+// 전체 게시물 갯수 확인
+export const fetchPostCount = async () => {
+  let postCount = null;
+
+  const postCountRef = collection(db, 'postCount');
+
+  const querySnapshotCount = await getDocs(postCountRef);
+
+  querySnapshotCount.forEach((doc) => {
+    const dataObj = { ...doc.data() };
+    postCount = dataObj.count;
+  });
+
+  return postCount;
 };

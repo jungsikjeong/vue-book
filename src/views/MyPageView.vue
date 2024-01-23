@@ -1,20 +1,26 @@
 <script setup lang="ts">
-import { ref, defineProps } from 'vue';
-
+import { ref, defineProps, onMounted } from 'vue';
 import router from '@/router';
+import { fetchMyPostLikeList, fetchMyPostList } from '@/api/post';
 
 import userSettingModal from '../components/modal/user-setting-modal/index.vue';
-import PostList from '../components/my-page/Post-list.vue';
+import PostItem from '../components/my-page/Post-item.vue';
 import InfoModal from '../components/modal/info-modal/index.vue';
 import Tab from '../components/tab/index.vue';
+import Loading from '@/components/Loading.vue';
+
 // TODO 유저의 기록,팔로워,팔로잉 숫자가 1이상이면 텍스트색상 굵게
 
+const postList = ref();
 const currentTapName = ref('기록');
 const modalShow = ref(false);
+const isLoading = ref(true);
+
 const props = defineProps(['user']);
 
-const onTapChange = (name: string) => {
+const onTapChange = async (name: string) => {
   currentTapName.value = name;
+  await fetchMyPostLikeList(props?.user?.uid);
 };
 
 const onModalOpen = () => {
@@ -28,6 +34,16 @@ const onLoginLinkClick = () => {
 const onCloseModal = () => {
   router.go(-1);
 };
+
+onMounted(async () => {
+  window.scroll(0, 0);
+  if (props?.user) {
+    const postData = await fetchMyPostList(props?.user?.uid);
+    postList.value = postData;
+
+    isLoading.value = false;
+  }
+});
 </script>
 
 <template>
@@ -85,8 +101,19 @@ const onCloseModal = () => {
         :names="['기록', '컬렉션']"
       />
 
-      <div class="section">
-        <PostList />
+      <Loading v-if="isLoading" />
+
+      <div class="grid" v-if="!isLoading">
+        <div class="box post-add-btn">
+          <font-awesome-icon :icon="['fas', 'plus']" />
+          <p>보드 추가</p>
+        </div>
+
+        <PostItem
+          v-for="postItem in postList"
+          :key="postItem.id"
+          :postItem="postItem"
+        />
       </div>
     </div>
   </div>
@@ -115,6 +142,44 @@ const onCloseModal = () => {
 }
 .section {
   display: flex;
+}
+
+.grid {
+  margin-top: 1rem;
+  margin-bottom: 3.5rem;
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-auto-rows: min-content;
+  gap: 0.5rem;
+}
+
+.box {
+  @media screen and (min-width: 480px) {
+    width: 100%;
+    height: 450px;
+  }
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  color: $cloudy-gray;
+  width: 100%;
+  height: 240px;
+
+  p {
+    font-size: 0.7rem;
+  }
+}
+
+.post-add-btn {
+  @media screen and (min-width: 480px) {
+    height: 450px;
+  }
+
+  border: 1px dashed #eee;
 }
 
 .user-info-wrap {
