@@ -1,21 +1,13 @@
 <script setup lang="ts">
-import router from '@/router';
 import { ref, defineProps } from 'vue';
 import { useStore } from 'vuex';
+import { onUserRouterMove } from '../../../assets/routerMove';
 
 const store = useStore();
 
 const props = defineProps({ postItem: Object });
 const content = ref(props.postItem && props.postItem.content.insert);
 const user = ref(store.getters['userStore/getUser']);
-
-const onUserRouterMove = (userId: string) => {
-  if (userId === user.value.uid) {
-    return router.push('/myPage');
-  } else {
-    return router.push('/' + userId + '/user');
-  }
-};
 </script>
 
 <template>
@@ -42,7 +34,7 @@ const onUserRouterMove = (userId: string) => {
 
       <div
         class="user-wrap pointer"
-        @click="onUserRouterMove(props.postItem.user[0].uid)"
+        @click="onUserRouterMove(props.postItem.user[0]?.uid, user)"
       >
         <img :src="props.postItem.user[0].photoURL" alt="" class="user-image" />
         <p class="user-name">{{ props.postItem.user[0].displayName }}</p>

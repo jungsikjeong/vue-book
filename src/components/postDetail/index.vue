@@ -15,6 +15,7 @@ const loading = ref(true);
 
 const fetchData = async () => {
   const postData = await fetchDetailPost(paramsId as string);
+
   if (postData) {
     const postAuthor = await fetchUserInfo(postData[0]?.uid);
 
@@ -33,6 +34,10 @@ const fetchData = async () => {
   loading.value = false;
 };
 
+const onLikeClick = () => {
+  alert('구현준비중입니다..😅');
+};
+
 onMounted(fetchData);
 </script>
 
@@ -41,7 +46,12 @@ onMounted(fetchData);
 
   <Post v-for="postItem in post" :postItem="postItem" :key="postItem" />
 
-  <Comment v-if="!loading" />
+  <Comment
+    v-for="postItem in post"
+    :postItem="postItem"
+    :key="postItem"
+    :onLikeClick="onLikeClick"
+  />
 </template>
 
 <style scoped lang="scss"></style>

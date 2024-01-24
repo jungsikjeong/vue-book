@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { fetchPostCount, fetchPostList } from '@/api/post';
 
 import PostItem from './post-item/index.vue';
@@ -11,7 +11,7 @@ const posts = ref();
 const count = ref(6);
 const postCount = ref();
 const isMoreButtonDisabled = ref(false);
-const isLoading = ref(true);
+const isLoading = ref(false);
 
 const onPostMoreBtnClick = async () => {
   if (!isMoreButtonDisabled.value) {
@@ -24,14 +24,19 @@ const onPostMoreBtnClick = async () => {
   }
 };
 
-onMounted(async () => {
-  const data = await fetchPostList();
-  posts.value = data;
+const onPostList = async () => {
+  if (!posts.value || posts.value === undefined) {
+    isLoading.value = true;
+    const data = await fetchPostList();
+    posts.value = data;
 
-  postCount.value = await fetchPostCount();
-  isMoreButtonDisabled.value = posts.value.length === postCount.value;
-  isLoading.value = false;
-});
+    postCount.value = await fetchPostCount();
+    isMoreButtonDisabled.value = posts.value?.length === postCount.value;
+    isLoading.value = false;
+  }
+};
+
+onMounted(onPostList);
 </script>
 
 <template>

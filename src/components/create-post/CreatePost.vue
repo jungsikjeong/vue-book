@@ -116,7 +116,7 @@ const onSubmit = async () => {
         tags: tags.value,
         imageUrl: uploadedImageFileName.value,
         like: [],
-        Comment: [],
+        comment: [],
         createdAt: new Date()?.toLocaleDateString('ko', {
           hour: '2-digit',
           minute: '2-digit',

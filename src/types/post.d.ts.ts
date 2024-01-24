@@ -9,4 +9,5 @@ export interface Post {
   tags: string[];
   title: string;
   uid: string;
+  comment?: string[];
 }
