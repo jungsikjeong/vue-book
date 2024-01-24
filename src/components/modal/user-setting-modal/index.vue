@@ -31,7 +31,6 @@ const onLogout = async () => {
   localStorage.removeItem('kakaoToken');
 
   isUserInfoModal.value = false;
-  alert('로그아웃 완료');
   router.push('/');
 };
 

@@ -5,18 +5,20 @@ const props = defineProps({ postItem: Object });
 </script>
 
 <template>
-  <div class="box-wrap" v-if="props.postItem">
-    <div class="box">
-      <img
-        v-for="image in props.postItem.imageUrl"
-        :src="image.src"
-        :key="image.src"
-        alt=""
-      />
-    </div>
+  <router-link :to="'/' + postItem?.id + '/post'">
+    <div class="box-wrap" v-if="props.postItem">
+      <div class="box">
+        <img
+          v-for="image in props.postItem.imageUrl"
+          :src="image.src"
+          :key="image.src"
+          alt=""
+        />
+      </div>
 
-    <h4 class="post-title">{{ postItem && postItem.title }}</h4>
-  </div>
+      <h4 class="post-title">{{ postItem && postItem.title }}</h4>
+    </div>
+  </router-link>
 </template>
 
 <style lang="scss" scoped>

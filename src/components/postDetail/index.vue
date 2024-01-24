@@ -44,14 +44,16 @@ onMounted(fetchData);
 <template>
   <Loading v-if="loading" />
 
-  <Post v-for="postItem in post" :postItem="postItem" :key="postItem" />
+  <div v-if="!loading">
+    <Post v-for="postItem in post" :postItem="postItem" :key="postItem" />
 
-  <Comment
-    v-for="postItem in post"
-    :postItem="postItem"
-    :key="postItem"
-    :onLikeClick="onLikeClick"
-  />
+    <Comment
+      v-for="postItem in post"
+      :postItem="postItem"
+      :key="postItem"
+      :onLikeClick="onLikeClick"
+    />
+  </div>
 </template>
 
 <style scoped lang="scss"></style>

@@ -9,8 +9,6 @@ import InfoModal from '../components/modal/info-modal/index.vue';
 import Tab from '../components/tab/index.vue';
 import Loading from '@/components/Loading.vue';
 
-// TODO 유저의 기록,팔로워,팔로잉 숫자가 1이상이면 텍스트색상 굵게
-
 const postList = ref();
 const currentTapName = ref('기록');
 const modalShow = ref(false);
@@ -33,6 +31,10 @@ const onLoginLinkClick = () => {
 
 const onCloseModal = () => {
   router.go(-1);
+};
+
+const onClick = () => {
+  alert('구현예정입니다.😅');
 };
 
 onMounted(async () => {
@@ -71,18 +73,30 @@ onMounted(async () => {
           <img class="user-image" :src="props.user?.photoURL" alt="" />
         </div>
         <div class="user-record-wrap">
-          <div>
-            <p>0</p>
+          <div
+            :class="{ isVisible: props?.user?.postCount !== 0 }"
+            class="pointer"
+            @click="onClick"
+          >
+            <p>{{ props?.user?.postCount }}</p>
             <p class="user-record-text">기록</p>
           </div>
           <span class="line"></span>
-          <div>
-            <p>0</p>
+          <div
+            :class="{ isVisible: props?.user?.followers?.length !== 0 }"
+            class="pointer"
+            @click="onClick"
+          >
+            <p>{{ props?.user?.followers?.length }}</p>
             <p class="user-record-text">팔로워</p>
           </div>
           <span class="line"></span>
-          <div>
-            <p>0</p>
+          <div
+            :class="{ isVisible: props?.user?.following?.length !== 0 }"
+            class="pointer"
+            @click="onClick"
+          >
+            <p>{{ props?.user?.following.length }}</p>
             <p class="user-record-text">팔로잉</p>
           </div>
         </div>
@@ -120,6 +134,11 @@ onMounted(async () => {
 </template>
 
 <style lang="scss" scoped>
+.isVisible {
+  color: $black-color;
+  font-weight: bold;
+}
+
 .container {
   position: relative;
   width: 100%;

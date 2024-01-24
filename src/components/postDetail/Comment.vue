@@ -53,7 +53,7 @@ onMounted(async () => {
       </span>
     </div>
 
-    <div class="input-wrap">
+    <div class="input-wrap" v-if="user">
       <input
         type="text"
         placeholder="댓글 달기"

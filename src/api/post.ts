@@ -5,6 +5,7 @@ import {
   doc,
   getDoc,
   getDocs,
+  increment,
   limit,
   orderBy,
   query,
@@ -170,12 +171,12 @@ export const incrementPostCount = async () => {
       // 데이터가 이미 존재하면 업데이트
       const postCountDoc = querySnapshot.docs[0];
       await updateDoc(doc(db, 'postCount', postCountDoc.id), {
-        count: postCountDoc.data().count + 1,
+        count: increment(1),
       });
     } else {
       // 데이터가 없으면 새로 추가
       await addDoc(collection(db, 'postCount'), {
-        count: 1,
+        count: increment(1),
       });
     }
   } catch (error) {

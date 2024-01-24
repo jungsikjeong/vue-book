@@ -1,43 +1,79 @@
 <script setup lang="ts">
-import { ref, defineProps } from 'vue';
+import { ref, onMounted, defineProps } from 'vue';
+import { useRoute } from 'vue-router';
+import { fetchUserInfo } from '@/api/user';
+import { fetchMyPostList } from '@/api/post';
+import { addFollow } from '@/api/follow';
 
 import Button from '../components/button/index.vue';
 import PostItem from '../components/my-page/Post-item.vue';
 import Tab from '../components/tab/index.vue';
+import Loading from '@/components/Loading.vue';
 
-// TODO 유저의 기록,팔로워,팔로잉 숫자가 1이상이면 텍스트색상 굵게
-const currentTapName = ref('기록');
+const $route = useRoute();
+
+// 현재 로그인한 유저
 const props = defineProps(['user']);
 
-const onFollow = () => {};
-onFollow;
+const currentTapName = ref('기록');
+const othersUser = ref();
+const postList = ref([]);
+const loading = ref(false);
+
+const onFollow = async () => {
+  if (props.user) {
+    await addFollow($route?.params?.id as string, props?.user);
+  } else {
+    alert('로그인이 필요한 서비스입니다.');
+  }
+};
 
 const onTapChange = (name: string) => {
   currentTapName.value = name;
+  postList.value = [];
 };
+
+const onUserInfoGet = async () => {
+  loading.value = true;
+  const data = await fetchUserInfo($route?.params?.id as string);
+  othersUser.value = data[0];
+
+  postList.value = await fetchMyPostList($route?.params?.id as string);
+
+  loading.value = false;
+};
+
+onMounted(onUserInfoGet);
 </script>
 
 <template>
-  <div class="container">
+  <Loading v-if="loading" />
+  <div class="container" v-if="!loading">
     <div>
       <div class="section">
         <div class="user-info-wrap">
-          <img class="user-image" :src="props.user?.photoURL" alt="" />
+          <img class="user-image" :src="othersUser?.photoURL" alt="" />
         </div>
 
         <div class="user-record-wrap">
           <div>
-            <p>0</p>
+            <p :class="{ isVisible: othersUser?.postCount !== 0 }">
+              {{ othersUser?.postCount }}
+            </p>
             <p class="user-record-text">기록</p>
           </div>
           <span class="line"></span>
           <div>
-            <p>0</p>
+            <p :class="{ isVisible: othersUser?.followers.length !== 0 }">
+              {{ othersUser?.followers?.length }}
+            </p>
             <p class="user-record-text">팔로워</p>
           </div>
           <span class="line"></span>
           <div>
-            <p>0</p>
+            <p :class="{ isVisible: othersUser?.following.length !== 0 }">
+              {{ othersUser?.following?.length }}
+            </p>
             <p class="user-record-text">팔로잉</p>
           </div>
         </div>
@@ -45,14 +81,15 @@ const onTapChange = (name: string) => {
 
       <div
         class="user-name"
-        :class="{ userStyle: props.user?.displayName?.length <= 3 }"
+        :class="{ userStyle: othersUser?.displayName?.length <= 3 }"
       >
-        {{ props.user?.displayName }}
+        {{ othersUser?.displayName }}
       </div>
 
       <div>
         <Button
           :title="`팔로우`"
+          :onBtnClick="onFollow"
           style="background-color: black; color: white; margin-bottom: 1rem"
         ></Button>
       </div>
@@ -63,14 +100,22 @@ const onTapChange = (name: string) => {
         :names="['기록', '컬렉션']"
       />
 
-      <div class="section">
-        <PostItem />
+      <div class="grid">
+        <PostItem
+          v-for="postItem in postList"
+          :key="postItem"
+          :postItem="postItem"
+        />
       </div>
     </div>
   </div>
 </template>
 
 <style lang="scss" scoped>
+.isVisible {
+  color: $black-color;
+  font-weight: bold;
+}
 .container {
   position: relative;
   width: 100%;
@@ -93,6 +138,16 @@ const onTapChange = (name: string) => {
 }
 .section {
   display: flex;
+}
+
+.grid {
+  margin-top: 1rem;
+  margin-bottom: 3.5rem;
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-auto-rows: min-content;
+  gap: 0.5rem;
 }
 
 .user-info-wrap {

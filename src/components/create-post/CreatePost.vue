@@ -13,6 +13,7 @@ import {
 import { addDoc, collection } from 'firebase/firestore';
 import { useStore } from 'vuex';
 import { incrementPostCount } from '@/api/post';
+import { addUserPostCount } from '@/api/user';
 
 import FileForm from './File-form.vue';
 import PostForm from './Post-form.vue';
@@ -125,7 +126,11 @@ const onSubmit = async () => {
         uid: user?.value.uid,
       });
 
+      // 유저가 작성한 postCount갯수 증가
+      await addUserPostCount(user?.value?.uid);
+      // 포스트 전체 갯수 증가
       await incrementPostCount();
+
       alert('게시글 업로드를 완료했습니다.');
       router.push('/');
     }
