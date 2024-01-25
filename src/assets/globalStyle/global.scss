@@ -17,6 +17,7 @@ $paragraph-size: 0.875rem; // 문단 크기
 
 .swiper-pagination {
   display: flex;
+  justify-content: center;
   align-items: center;
   width: 70px !important;
   padding: 0.4rem;

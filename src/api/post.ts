@@ -14,7 +14,6 @@ import {
   updateDoc,
   where,
 } from 'firebase/firestore';
-import { fetchUserInfo } from './user';
 import { Post } from '@/types/post.d.ts';
 
 interface fetchPostList {

@@ -8,6 +8,7 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import { onUserRouterMove } from '@/assets/routerMove';
 import { useStore } from 'vuex';
+import { postHotTopic } from '@/api/hotTopic';
 
 const store = useStore();
 
@@ -20,6 +21,14 @@ const showMoreBtn = ref(false);
 const isMoreContent = ref(false);
 const user = ref(store.getters['userStore/getUser']);
 
+const onHotTopic = async () => {
+  const data = {
+    postId: props?.postItem?.id,
+    userId: user?.value?.uid,
+  };
+  await postHotTopic({ data });
+};
+
 onMounted(() => {
   if (props?.postItem?.content?.intert?.length >= TextLimitLength.value) {
     showMoreBtn.value = true;
@@ -28,6 +37,10 @@ onMounted(() => {
 </script>
 
 <template>
+  <div class="label pointer" @click="onHotTopic" v-if="user?.admin">
+    에디터's Pick 하기
+  </div>
+
   <swiper
     :rewind="true"
     :navigation="false"
@@ -87,6 +100,16 @@ onMounted(() => {
 </template>
 
 <style scoped lang="scss">
+.label {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  background-color: $orange-color;
+  padding: 5px 8px;
+  border-radius: 2.5px;
+  font-size: 0.6rem;
+  font-weight: bold;
+}
 .pagination {
   z-index: 10;
   position: absolute;

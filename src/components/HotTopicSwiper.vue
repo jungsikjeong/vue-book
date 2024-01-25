@@ -1,50 +1,26 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { Swiper, SwiperSlide } from 'swiper/vue';
 import { Navigation, Pagination } from 'swiper/modules';
 
 import 'swiper/swiper-bundle.css';
 import 'swiper/css';
 import 'swiper/css/navigation';
+import { fetchHotTopic } from '@/api/hotTopic';
 
 const modules = ref([Navigation, Pagination]);
 
-const slides = ref([
-  {
-    id: '1',
-    src: 'https://d25rzgv0ld7qzl.cloudfront.net/media/29709/acdh07k00590658e6a588e55a6ffaad0',
-    title: '일주일의 커피♨',
-    content: '하루 한 끼,나를 위한 테이블 기록',
-    user: 'Aine님이 새벽에 하는 생각들',
-  },
-  {
-    id: '2',
-    src: 'https://cdn.kagit.kr/2023/08/01/webp_image_90f99b7c8d.webp',
-    title: '일주일의 커피♨2',
-    content: '하루 한 끼,나를 위한 테이블 기록',
-    user: 'Aine님이 새벽에 하는 생각들',
-  },
-  {
-    id: ' 3',
-    src: 'https://picsum.photos/414/414?random=3',
-    title: '일주일의 커피♨3',
-    content: '하루 한 끼,나를 위한 테이블 기록',
-    user: 'Aine님이 새벽에 하는 생각들',
-  },
-  {
-    id: ' 4',
-    src: 'https://picsum.photos/414/414?random=4',
-    title: '일주일의 커피♨4',
-    content: '하루 한 끼,나를 위한 테이블 기록',
-    user: 'Aine님이 새벽에 하는 생각들',
-  },
-]);
-
-const currentSlide = ref(slides.value[0]);
+const hotTopicList = ref();
+const currentSlide = ref();
 
 const onUpdateCurrentSlide = (e: any) => {
-  currentSlide.value = slides.value[e.realIndex];
+  if (hotTopicList.value) {
+    currentSlide.value = hotTopicList.value[e?.realIndex];
+  }
 };
+onMounted(async () => {
+  hotTopicList.value = await fetchHotTopic();
+});
 </script>
 
 <template>
@@ -72,16 +48,20 @@ const onUpdateCurrentSlide = (e: any) => {
       >
         <div class="label">에디터's Pick</div>
 
-        <swiper-slide v-for="slide in slides" :key="slide.id">
-          <router-link :to="'/' + slide.id + '/post'">
+        <swiper-slide
+          v-for="hotTopicItem in hotTopicList"
+          :key="hotTopicItem.id"
+        >
+          <router-link :to="'/' + hotTopicItem.id + '/post'">
             <div class="image-wrap">
-              <img :src="slide.src" />
+              <img :src="hotTopicItem.imageUrl[0].src" />
             </div>
           </router-link>
+          {{ hotTopicItem.imageUrl }}
         </swiper-slide>
       </swiper>
 
-      <div class="text-wrap">
+      <!-- <div class="text-wrap">
         <router-link :to="'/' + currentSlide.id + '/post'">
           <h3 class="title">{{ currentSlide.title }}</h3>
           <p class="content">{{ currentSlide.content }}</p>
@@ -94,6 +74,30 @@ const onUpdateCurrentSlide = (e: any) => {
             alt=""
           />
           <p class="user-text">{{ currentSlide.user }}</p>
+        </div>
+      </div> -->
+
+      <div class="text-wrap">
+        <router-link :to="'/' + currentSlide?.id + '/post'">
+          <h3 class="title">{{ currentSlide?.title }}</h3>
+          <p class="content">{{ currentSlide?.content?.insert }}</p>
+        </router-link>
+
+        <div class="user-content">
+          <img
+            class="user-logo"
+            :src="
+              currentSlide && currentSlide.user && currentSlide.user[0].photoURL
+            "
+            alt=""
+          />
+          <p class="user-text">
+            {{
+              currentSlide &&
+              currentSlide.user &&
+              currentSlide.user[0].displayName
+            }}
+          </p>
         </div>
       </div>
     </div>

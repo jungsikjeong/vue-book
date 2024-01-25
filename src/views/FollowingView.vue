@@ -27,7 +27,7 @@ const onCloseModal = () => {
 
   <div v-if="props?.user" class="following-wrapper">
     <div class="not-following">
-      <SubTitle :title="`아직 팔로잉한 유저가 없습니다..`"></SubTitle>
+      <SubTitle :title="`구현 예정입니다.😅`"></SubTitle>
     </div>
   </div>
 </template>
