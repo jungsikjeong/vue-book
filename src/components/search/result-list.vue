@@ -4,8 +4,8 @@ import UserList from './User-list.vue';
 import PostList from './Post-list.vue';
 
 const props = defineProps({
-  dummyUsers: Array as any,
-  dummyPosts: Array as any,
+  dummyUsers: Array,
+  dummyPosts: Array,
   currentTapName: String,
 });
 </script>
