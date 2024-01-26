@@ -4,8 +4,7 @@ import { dummyUsersFn, dummyPostsFn } from '../assets/dummyData';
 
 import SubTitle from '../components/sub-title/index.vue';
 import Tab from '../components/tab/index.vue';
-import ResultList from '../components/search/Result-list.vue';
-// TODO 검색어 클릭시 바로 검색되게끔
+import ResultList from '../components/search/ResultList.vue';
 
 const focusState = ref(false);
 const inputState = ref('');
