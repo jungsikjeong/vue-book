@@ -127,35 +127,32 @@ export const fetchDetailPost = async (postId: string) => {
 
 // 내가 좋아요누른 게시물 확인
 export const fetchMyPostLikeList = async (userId: string) => {
-  const userRef = collection(db, 'users');
-  const userDataArr = [] as any;
+  const usersRef = doc(db, 'users', userId);
+  const userSnap = await getDoc(usersRef);
 
-  const userQuery = query(userRef, where('uid', '==', userId));
+  const user = { ...userSnap?.data() };
+  if (user.likePost.length !== 0) {
+    for (const postId of user.likePost) {
+      const postData = [];
 
-  const userSnapshots = await getDocs(userQuery);
+      const postRef = collection(db, 'posts');
+      const dataArr = [] as any;
 
-  userSnapshots.forEach((doc) => {
-    const dataObj = { ...doc.data(), id: doc.id };
+      const q = query(postRef, orderBy('createdAt'), where('id', '==', postId));
 
-    userDataArr.push(dataObj);
-  });
+      const documentSnapshots = await getDocs(q);
 
-  console.log(userDataArr[0].likePost);
+      documentSnapshots.forEach((doc) => {
+        const dataObj = { ...(doc.data() as Post), id: doc.id };
 
-  // const postRef = collection(db, 'posts');
-  // const dataArr = [] as any;
-
-  // const q = query(postRef, orderBy('createdAt'), where('uid', '==', userId));
-
-  // const documentSnapshots = await getDocs(q);
-
-  // documentSnapshots.forEach((doc) => {
-  //   const dataObj = { ...(doc.data() as Post), id: doc.id };
-
-  //   dataArr.push(dataObj);
-  // });
-
-  // return dataArr;
+        dataArr.push(dataObj);
+      });
+      console.log('dataArr:', dataArr);
+      return dataArr;
+    }
+  } else {
+    return '';
+  }
 };
 
 // 포스트 전체 갯수증가

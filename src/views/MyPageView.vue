@@ -8,17 +8,31 @@ import PostItem from '../components/my-page/Post-item.vue';
 import InfoModal from '../components/modal/info-modal/index.vue';
 import Tab from '../components/tab/index.vue';
 import Loading from '@/components/Loading.vue';
+import SubTitle from '../components/sub-title/index.vue';
 
 const postList = ref();
 const currentTapName = ref('기록');
 const modalShow = ref(false);
-const isLoading = ref(true);
+const isLoading = ref(false);
 
 const props = defineProps(['user']);
 
 const onTapChange = async (name: string) => {
   currentTapName.value = name;
-  await fetchMyPostLikeList(props?.user?.uid);
+  if (name === '컬렉션') {
+    isLoading.value = true;
+    postList.value = await fetchMyPostLikeList(props?.user?.uid);
+    isLoading.value = false;
+  } else {
+    if (props?.user) {
+      isLoading.value = true;
+
+      const postData = await fetchMyPostList(props?.user?.uid);
+      postList.value = postData;
+
+      isLoading.value = false;
+    }
+  }
 };
 
 const onModalOpen = () => {
@@ -39,9 +53,12 @@ const onClick = () => {
 
 onMounted(async () => {
   window.scroll(0, 0);
+
+  isLoading.value = true;
   if (props?.user) {
     const postData = await fetchMyPostList(props?.user?.uid);
     postList.value = postData;
+    console.log(postList.value);
 
     isLoading.value = false;
   }
@@ -118,9 +135,24 @@ onMounted(async () => {
       <Loading v-if="isLoading" />
 
       <div class="grid" v-if="!isLoading">
-        <div class="box post-add-btn">
-          <font-awesome-icon :icon="['fas', 'plus']" />
-          <p>보드 추가</p>
+        <router-link to="/writer" v-if="currentTapName !== '컬렉션'">
+          <div class="box post-add-btn">
+            <font-awesome-icon :icon="['fas', 'plus']" />
+            <p>보드 추가</p>
+          </div>
+        </router-link>
+
+        <div
+          class="not-following"
+          v-if="postList?.length === 0 || !postList || postList === undefined"
+        >
+          <SubTitle
+            :title="
+              currentTapName === '기록'
+                ? `게시글이 없습니다..😅`
+                : `컬렉션이 없습니다..😅`
+            "
+          ></SubTitle>
         </div>
 
         <PostItem
@@ -137,6 +169,9 @@ onMounted(async () => {
 .isVisible {
   color: $black-color;
   font-weight: bold;
+}
+.not-following {
+  padding: 1rem;
 }
 
 .container {

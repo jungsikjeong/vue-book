@@ -61,22 +61,6 @@ onMounted(async () => {
         </swiper-slide>
       </swiper>
 
-      <!-- <div class="text-wrap">
-        <router-link :to="'/' + currentSlide.id + '/post'">
-          <h3 class="title">{{ currentSlide.title }}</h3>
-          <p class="content">{{ currentSlide.content }}</p>
-        </router-link>
-
-        <div class="user-content">
-          <img
-            class="user-logo"
-            src="https://picsum.photos/200?random=1"
-            alt=""
-          />
-          <p class="user-text">{{ currentSlide.user }}</p>
-        </div>
-      </div> -->
-
       <div class="text-wrap">
         <router-link :to="'/' + currentSlide?.id + '/post'">
           <h3 class="title">{{ currentSlide?.title }}</h3>
@@ -188,6 +172,10 @@ onMounted(async () => {
 
   .content {
     font-size: 0.8rem;
+    max-height: 20px;
+    word-break: break-word;
+    white-space: pre-line;
+    overflow: hidden;
   }
   .user-content {
     margin-top: 10px;

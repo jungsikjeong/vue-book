@@ -9,9 +9,8 @@ const props = defineProps({ postItem: Object });
     <div class="box-wrap" v-if="props.postItem">
       <div class="box">
         <img
-          v-for="image in props.postItem.imageUrl"
-          :src="image.src"
-          :key="image.src"
+          :src="props.postItem.imageUrl[0].src"
+          :key="props.postItem.imageUrl[0].src"
           alt=""
         />
       </div>
