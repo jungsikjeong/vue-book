@@ -6,17 +6,8 @@ export const fetchKakaoAuth = async () => {
 
   const GRANT_TYPE = 'authorization_code';
   const CLIENT_ID = `${process.env.VUE_APP_KAKAO_REST_API}`;
-  let REDIRECT_URI;
-
-  if (process.env.CUSTOM_ENV === 'production') {
-    console.log('프로덕션');
-    console.log('process.env.VERCEL_ENV::', process.env.VERCEL_ENV);
-    REDIRECT_URI = 'https://vue-book.vercel.app/callback/kakaotalk';
-  } else {
-    console.log('로컬');
-    console.log('process.env.VERCEL_ENV::', process.env.VERCEL_ENV);
-    REDIRECT_URI = 'http://localhost:8080/callback/kakaotalk';
-  }
+  const REDIRECT_URI = 'https://vue-book.vercel.app/callback/kakaotalk';
+  // const  REDIRECT_URI ='http://localhost:8080/callback/kakaotalk'
 
   try {
     // 카카오 토큰 요청
