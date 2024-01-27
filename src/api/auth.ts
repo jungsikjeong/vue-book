@@ -9,8 +9,12 @@ export const fetchKakaoAuth = async () => {
   let REDIRECT_URI;
 
   if (process.env.CUSTOM_ENV === 'production') {
+    console.log('프로덕션');
+    console.log('process.env.VERCEL_ENV::', process.env.VERCEL_ENV);
     REDIRECT_URI = 'https://vue-book.vercel.app/callback/kakaotalk';
   } else {
+    console.log('로컬');
+    console.log('process.env.VERCEL_ENV::', process.env.VERCEL_ENV);
     REDIRECT_URI = 'http://localhost:8080/callback/kakaotalk';
   }
 
