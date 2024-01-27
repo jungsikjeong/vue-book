@@ -66,7 +66,7 @@ onMounted(async () => {
     <div
       class="user-wrap"
       v-for="commentItem in commentList"
-      :key="commentItem.userId"
+      :key="commentItem?.user?.userId"
     >
       <div
         class="user-wrap-img__wrap"
@@ -78,7 +78,7 @@ onMounted(async () => {
       <div class="user-wrap-name__wrap">
         <p
           class="user-wrap-name__wrap-username"
-          @click="onUserRouterMove(props.postItem?.uid, user)"
+          @click="onUserRouterMove(commentItem?.user?.uid, user)"
         >
           {{ commentItem?.user?.displayName }}
         </p>

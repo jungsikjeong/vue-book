@@ -2,23 +2,23 @@
 import { ref, onMounted, defineProps } from 'vue';
 import { useRoute } from 'vue-router';
 import { fetchUserInfo } from '@/api/user';
-import { fetchMyPostList } from '@/api/post';
+import { fetchMyPostLikeList, fetchMyPostList } from '@/api/post';
 import { addFollow } from '@/api/follow';
 
 import Button from '../components/button/index.vue';
 import PostItem from '../components/my-page/Post-item.vue';
 import Tab from '../components/tab/index.vue';
 import Loading from '@/components/Loading.vue';
-
+import SubTitle from '@/components/sub-title/index.vue';
 const $route = useRoute();
 
 // 현재 로그인한 유저
 const props = defineProps(['user']);
 
 const currentTapName = ref('기록');
-const othersUser = ref();
+const userInfo = ref();
 const postList = ref([]);
-const loading = ref(false);
+const isLoading = ref(false);
 
 const onFollow = async () => {
   if (props.user) {
@@ -28,51 +28,64 @@ const onFollow = async () => {
   }
 };
 
-const onTapChange = (name: string) => {
+const onTapChange = async (name: string) => {
   currentTapName.value = name;
-  postList.value = [];
+  if (name === '컬렉션') {
+    isLoading.value = true;
+    postList.value = await fetchMyPostLikeList(userInfo?.value?.uid);
+    isLoading.value = false;
+  } else {
+    if (props?.user) {
+      isLoading.value = true;
+
+      const postData = await fetchMyPostList(userInfo?.value?.uid);
+      postList.value = postData;
+
+      isLoading.value = false;
+    }
+  }
 };
 
 const onUserInfoGet = async () => {
-  loading.value = true;
+  isLoading.value = true;
   const data = await fetchUserInfo($route?.params?.id as string);
-  othersUser.value = data[0];
+  userInfo.value = data[0];
 
   postList.value = await fetchMyPostList($route?.params?.id as string);
 
-  loading.value = false;
+  isLoading.value = false;
 };
 
 onMounted(onUserInfoGet);
 </script>
 
 <template>
-  <Loading v-if="loading" />
-  <div class="container" v-if="!loading">
+  <Loading v-if="isLoading" />
+  <div class="container" v-if="!isLoading">
     <div>
       <div class="section">
         <div class="user-info-wrap">
-          <img class="user-image" :src="othersUser?.photoURL" alt="" />
+          <img class="user-image" :src="userInfo?.photoURL" alt="" />
         </div>
 
         <div class="user-record-wrap">
           <div>
-            <p :class="{ isVisible: othersUser?.postCount !== 0 }">
-              {{ othersUser?.postCount }}
+            <p :class="{ isVisible: userInfo?.postCount !== 0 }">
+              {{ userInfo?.postCount }}
             </p>
             <p class="user-record-text">기록</p>
           </div>
           <span class="line"></span>
           <div>
-            <p :class="{ isVisible: othersUser?.followers.length !== 0 }">
-              {{ othersUser?.followers?.length }}
+            <p :class="{ isVisible: userInfo?.followers.length !== 0 }">
+              {{ userInfo?.followers?.length }}
             </p>
             <p class="user-record-text">팔로워</p>
           </div>
           <span class="line"></span>
           <div>
-            <p :class="{ isVisible: othersUser?.following.length !== 0 }">
-              {{ othersUser?.following?.length }}
+            <p :class="{ isVisible: userInfo?.following.length !== 0 }">
+              {{ userInfo?.following?.length }}
             </p>
             <p class="user-record-text">팔로잉</p>
           </div>
@@ -81,9 +94,9 @@ onMounted(onUserInfoGet);
 
       <div
         class="user-name"
-        :class="{ userStyle: othersUser?.displayName?.length <= 3 }"
+        :class="{ userStyle: userInfo?.displayName?.length <= 3 }"
       >
-        {{ othersUser?.displayName }}
+        {{ userInfo?.displayName }}
       </div>
 
       <div>
@@ -99,6 +112,19 @@ onMounted(onUserInfoGet);
         :onTapChange="onTapChange"
         :names="['기록', '컬렉션']"
       />
+
+      <div
+        class="not-following"
+        v-if="postList?.length === 0 || !postList || postList === undefined"
+      >
+        <SubTitle
+          :title="
+            currentTapName === '기록'
+              ? `게시글이 없습니다..😅`
+              : `컬렉션이 없습니다..😅`
+          "
+        ></SubTitle>
+      </div>
 
       <div class="grid">
         <PostItem
@@ -152,6 +178,7 @@ onMounted(onUserInfoGet);
 
 .user-info-wrap {
   width: 65px;
+  height: 65px;
   margin-right: 1rem;
 
   .user-image {

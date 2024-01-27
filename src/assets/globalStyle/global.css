@@ -185,3 +185,7 @@ body {
 .ql-editor::placeholder {
   font-size: 0.875rem;
 }
+
+.not-following {
+  padding: 1rem;
+}

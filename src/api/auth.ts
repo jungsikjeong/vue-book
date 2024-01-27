@@ -14,9 +14,6 @@ export const fetchKakaoAuth = async () => {
     REDIRECT_URI = 'http://localhost:8080/callback/kakaotalk';
   }
 
-  // const REDIRECT_URI = 'https://vue-book.vercel.app/callback/kakaotalk';
-  // const  REDIRECT_URI ='http://localhost:8080/callback/kakaotalk'
-
   try {
     // 카카오 토큰 요청
     const res = await axios.post(

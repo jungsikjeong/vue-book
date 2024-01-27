@@ -58,7 +58,6 @@ onMounted(async () => {
   if (props?.user) {
     const postData = await fetchMyPostList(props?.user?.uid);
     postList.value = postData;
-    console.log(postList.value);
 
     isLoading.value = false;
   }
@@ -169,9 +168,6 @@ onMounted(async () => {
 .isVisible {
   color: $black-color;
   font-weight: bold;
-}
-.not-following {
-  padding: 1rem;
 }
 
 .container {

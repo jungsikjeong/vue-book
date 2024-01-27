@@ -6,7 +6,7 @@ if (process.env.NODE_ENV === 'production') {
 } else {
   REDIRECT_URI = 'http://localhost:8080/callback/kakaotalk';
 }
-// const REDIRECT_URI = 'http://localhost:8080/callback/kakaotalk';
+
 const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${REST_API_KEY}&redirect_uri=${REDIRECT_URI}&response_type=code`;
 </script>
 
