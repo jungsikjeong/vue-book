@@ -3,7 +3,7 @@ import { ref, onMounted, defineProps } from 'vue';
 import { useRoute } from 'vue-router';
 import { fetchUserInfo } from '@/api/user';
 import { fetchMyPostLikeList, fetchMyPostList } from '@/api/post';
-import { addFollow } from '@/api/follow';
+import { addFollow, unFollow } from '@/api/follow';
 
 import Button from '../components/button/index.vue';
 import PostItem from '../components/my-page/Post-item.vue';
@@ -18,11 +18,34 @@ const props = defineProps(['user']);
 const currentTapName = ref('기록');
 const userInfo = ref();
 const postList = ref([]);
+const isFollow = ref(false);
+
 const isLoading = ref(false);
 
 const onFollow = async () => {
   if (props.user) {
-    await addFollow($route?.params?.id as string, props?.user);
+    // 팔로우안한 상태라면,
+    if (!isFollow.value) {
+      // 팔로우
+      await addFollow($route?.params?.id as string, props?.user);
+
+      // 유저정보 최신화
+      const data = await fetchUserInfo($route?.params?.id as string);
+      userInfo.value = data[0];
+
+      isFollow.value = true;
+
+      // 팔로우 한 상태라면
+    } else if (isFollow.value) {
+      // 팔로우
+      await unFollow($route?.params?.id as string, props?.user);
+
+      // 유저정보 최신화
+      const data = await fetchUserInfo($route?.params?.id as string);
+      userInfo.value = data[0];
+
+      isFollow.value = false;
+    }
   } else {
     alert('로그인이 필요한 서비스입니다.');
   }
@@ -52,7 +75,9 @@ const onUserInfoGet = async () => {
   userInfo.value = data[0];
 
   postList.value = await fetchMyPostList($route?.params?.id as string);
-
+  if (props?.user) {
+    isFollow.value = props?.user?.following.includes(userInfo?.value?.uid);
+  }
   isLoading.value = false;
 };
 
@@ -99,11 +124,20 @@ onMounted(onUserInfoGet);
         {{ userInfo?.displayName }}
       </div>
 
+      <!-- 팔로우 버튼 -->
       <div>
         <Button
           :title="`팔로우`"
           :onBtnClick="onFollow"
           style="background-color: black; color: white; margin-bottom: 1rem"
+          v-if="!isFollow"
+        ></Button>
+
+        <Button
+          :title="`팔로잉중`"
+          :onBtnClick="onFollow"
+          style="background-color: #ffba1d; color: white; margin-bottom: 1rem"
+          v-if="isFollow"
         ></Button>
       </div>
 

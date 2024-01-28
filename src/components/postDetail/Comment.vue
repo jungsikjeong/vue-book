@@ -69,7 +69,7 @@ onMounted(async () => {
       :key="commentItem?.user?.userId"
     >
       <div
-        class="user-wrap-img__wrap"
+        class="user-wrap-img__wrap pointer"
         @click="onUserRouterMove(props.postItem?.uid, user)"
       >
         <img :src="commentItem?.user?.photoURL" alt="" />
@@ -77,7 +77,7 @@ onMounted(async () => {
 
       <div class="user-wrap-name__wrap">
         <p
-          class="user-wrap-name__wrap-username"
+          class="user-wrap-name__wrap-username pointer"
           @click="onUserRouterMove(commentItem?.user?.uid, user)"
         >
           {{ commentItem?.user?.displayName }}
