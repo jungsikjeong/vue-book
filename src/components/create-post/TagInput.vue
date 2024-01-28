@@ -65,7 +65,6 @@ onBeforeUnmount(() => {
         v-model="newTag"
         @input="onChangeInput($event)"
         @keyup.enter="onAddTag"
-        @keyup.delete="props.onRemoveTag && props.onRemoveTag()"
         @focus="onTagFocus"
         :placeholder="`#태그입력`"
       />

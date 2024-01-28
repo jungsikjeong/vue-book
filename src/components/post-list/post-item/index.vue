@@ -1,13 +1,25 @@
 <script setup lang="ts">
-import { ref, defineProps } from 'vue';
+import { ref, defineProps, onMounted } from 'vue';
 import { useStore } from 'vuex';
 import { onUserRouterMove } from '../../../assets/routerMove';
 
 const store = useStore();
 
 const props = defineProps({ postItem: Object });
-const content = ref(props.postItem && props.postItem.content.insert);
+const content = ref(props.postItem && props.postItem.content);
 const user = ref(store.getters['userStore/getUser']);
+
+const onContentUpdate = () => {
+  if (content.value) {
+    const newContent = content.value.replace(/<[^>]*>/g, '');
+
+    content.value = newContent;
+  }
+};
+
+onMounted(() => {
+  onContentUpdate();
+});
 </script>
 
 <template>
@@ -15,10 +27,8 @@ const user = ref(store.getters['userStore/getUser']);
     <router-link :to="'/' + props.postItem.id + '/post'">
       <div class="image-wrap">
         <img
-          v-for="image in props.postItem.imageUrl"
-          :src="image.src"
-          :alt="`image${image.src}`"
-          :key="image"
+          :src="props.postItem.imageUrl[0].src"
+          :alt="`image${props.postItem.imageUrl[0].src}`"
           class="main-image"
         />
       </div>
@@ -34,10 +44,10 @@ const user = ref(store.getters['userStore/getUser']);
 
       <div
         class="user-wrap pointer"
-        @click="onUserRouterMove(props.postItem.user[0]?.uid, user)"
+        @click="onUserRouterMove(props.postItem.user.uid, user)"
       >
-        <img :src="props.postItem.user[0].photoURL" alt="" class="user-image" />
-        <p class="user-name">{{ props.postItem.user[0].displayName }}</p>
+        <img :src="props.postItem.user.photoURL" alt="" class="user-image" />
+        <p class="user-name">{{ props.postItem.user.displayName }}</p>
       </div>
     </div>
   </li>

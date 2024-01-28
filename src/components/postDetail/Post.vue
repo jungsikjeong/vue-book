@@ -16,7 +16,7 @@ const props = defineProps(['postItem']);
 
 const modules = ref([Navigation, Pagination]);
 const currentPage = ref(1);
-const TextLimitLength = ref(196);
+const TextLimitLength = ref(150);
 const showMoreBtn = ref(false);
 const isMoreContent = ref(false);
 const user = ref(store.getters['userStore/getUser']);
@@ -30,7 +30,7 @@ const onHotTopic = async () => {
 };
 
 onMounted(() => {
-  if (props?.postItem?.content?.intert?.length >= TextLimitLength.value) {
+  if (props?.postItem?.content?.length >= TextLimitLength.value) {
     showMoreBtn.value = true;
   }
 });
@@ -80,7 +80,7 @@ onMounted(() => {
         ... <strong>더보기</strong>
       </div>
 
-      {{ props?.postItem?.content?.insert }}
+      <p v-html="props?.postItem?.content"></p>
     </div>
 
     <ul class="post-tags">

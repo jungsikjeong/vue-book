@@ -19,9 +19,11 @@ const image = reactive({
 
 const cropper = ref();
 const file = ref();
+const loading = ref(false);
 
 // 다음버튼을 누르면 이미지가 저장이됨
 const onCropImage = async () => {
+  loading.value = true;
   if (cropper.value) {
     const { canvas } = cropper.value.getResult();
     const dataURL = canvas.toDataURL(image.type);
@@ -33,6 +35,7 @@ const onCropImage = async () => {
 
     props.onImagesUpload && props.onImagesUpload(imageSubmit);
     props.onToggleIsShowFileEdit && props.onToggleIsShowFileEdit();
+    loading.value = false;
   }
 };
 
@@ -64,8 +67,10 @@ onUnmounted(() => {
 
 <template>
   <header class="file-wrap-header" v-if="props.isShowFileEdit">
-    <div @click="onCropImage" class="pointer">다음</div>
+    <div v-if="loading">loading..</div>
+    <div v-else @click="onCropImage" class="pointer">다음</div>
   </header>
+
   <div class="file-wrap">
     <label for="post-image" class="input-file-wrap pointer">
       <div>

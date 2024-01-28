@@ -27,10 +27,15 @@ const user = ref(store.getters['userStore/getUser']);
 const imagesFile = ref<Images[]>([]);
 const uploadedImageFileName = ref<{ src: string }[]>([]);
 
-const formData = ref({ title: '', content: '' });
-const tags = ref<string[]>([]);
+const formData = ref({
+  title: localStorage.getItem('title') || '',
+  content: localStorage.getItem('content') || '',
+});
+
+const tags = ref<string[]>(JSON.parse(localStorage.getItem('tags') || '[]'));
 
 const isShowFileEdit = ref(false);
+const isLoading = ref(false);
 
 // Fire-form.vue에서 onCropImage를 누르면 발동됨
 // 이미지의 blob객체를 담고있음
@@ -42,23 +47,26 @@ const onImagesUpload = (images: any) => {
 };
 
 const onFormDataUpdate = ({ title, content }: any) => {
+  // 제목 입력
   if (title) {
-    formData.value = { ...formData.value, title: title?.target.value };
+    formData.value = { ...formData.value, title: title };
   } else {
+    // 내용 입력
     formData.value = { ...formData.value, content: content };
   }
 };
 
 const onAddTag = (tag: string) => {
-  tags.value.push(tag);
+  const dataArray = [...tags.value, tag];
+  localStorage.setItem('tags', JSON.stringify(dataArray));
+  tags.value = dataArray;
 };
 
 const onRemoveTag = (index: number) => {
-  if (index) {
+  if (index !== undefined && index !== null) {
     tags.value.splice(index, 1);
-  } else {
-    // 백스페이스 키 눌렀을 때
-    tags.value.splice(0, 1);
+
+    localStorage.setItem('tags', JSON.stringify(tags.value));
   }
 };
 
@@ -92,6 +100,8 @@ const handelUploadImages = async () => {
 };
 
 const onSubmit = async () => {
+  if (isLoading.value) return;
+
   if (imagesFile.value.length === 0) {
     return alert('이미지를 하나 이상 업로드해주세요! ');
   } else if (
@@ -108,7 +118,10 @@ const onSubmit = async () => {
     return alert('태그를 하나 이상 입력해주세요');
   }
 
+  isLoading.value = true;
+
   await handelUploadImages();
+
   try {
     if (uploadedImageFileName.value) {
       await addDoc(collection(db, 'posts'), {
@@ -132,7 +145,12 @@ const onSubmit = async () => {
       await incrementPostCount();
 
       alert('게시글 업로드를 완료했습니다.');
-      router.push('/');
+      isLoading.value = false;
+
+      localStorage.removeItem('title'),
+        localStorage.removeItem('content'),
+        localStorage.removeItem('tags'),
+        router.push('/');
     }
   } catch (error) {
     // 게시글 업로드중 오류가 발생했을 경우,
@@ -162,10 +180,13 @@ onMounted(() => {
       @click="onSubmit"
       :class="{
         complete:
-          formData.title && formData.content && tags.length !== 0 && imagesFile,
+          formData.title &&
+          formData.content &&
+          tags.length !== 0 &&
+          imagesFile.length !== 0,
       }"
     >
-      완료
+      {{ isLoading ? 'loading...' : '완료' }}
     </div>
   </header>
 
@@ -176,7 +197,8 @@ onMounted(() => {
   />
   <PostForm
     :isShowFileEdit="isShowFileEdit"
-    :formData="formData"
+    :title="formData.title"
+    :content="formData.content"
     :onFormDataUpdate="onFormDataUpdate"
     v-if="!isShowFileEdit"
   />

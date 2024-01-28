@@ -35,8 +35,7 @@ export const fetchPostList = async ({ count = 6 }: fetchPostList = {}) => {
       dataArr.push(dataObj);
     });
 
-    const userData = [] as any;
-
+    // 해당 게시글 작성자 정보 추가
     const usersRef = collection(db, 'users');
     if (dataArr.length > 0) {
       for (const data of dataArr) {
@@ -45,13 +44,11 @@ export const fetchPostList = async ({ count = 6 }: fetchPostList = {}) => {
         const userDataQuerySnapshot = await getDocs(q);
 
         userDataQuerySnapshot.forEach((doc) => {
-          const userDataObj = { ...doc.data(), id: doc.id };
-          userData.push(userDataObj);
+          const userDataObj: any = { ...doc.data(), id: doc.id };
+          if (userDataObj?.uid === data.uid) {
+            data.user = userDataObj;
+          }
         });
-
-        for (const data of dataArr) {
-          data.user = userData;
-        }
       }
     }
   } else {
@@ -73,22 +70,20 @@ export const fetchPostList = async ({ count = 6 }: fetchPostList = {}) => {
 
       dataArr.push(dataObj);
     });
-    const userData = [] as any;
 
     const usersRef = collection(db, 'users');
-
-    for (const data of dataArr) {
-      const q = query(usersRef, where('uid', '==', data.uid));
-
-      const userDataQuerySnapshot = await getDocs(q);
-
-      userDataQuerySnapshot.forEach((doc) => {
-        const userDataObj = { ...doc.data(), id: doc.id };
-        userData.push(userDataObj);
-      });
-
+    if (dataArr.length > 0) {
       for (const data of dataArr) {
-        data.user = userData;
+        const q = query(usersRef, where('uid', '==', data.uid));
+
+        const userDataQuerySnapshot = await getDocs(q);
+
+        userDataQuerySnapshot.forEach((doc) => {
+          const userDataObj: any = { ...doc.data(), id: doc.id };
+          if (userDataObj?.uid === data.uid) {
+            data.user = userDataObj;
+          }
+        });
       }
     }
   }

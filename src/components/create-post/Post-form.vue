@@ -1,17 +1,43 @@
 <script setup lang="ts">
-import { defineProps, ref } from 'vue';
+import { defineProps, ref, onMounted } from 'vue';
 import { QuillEditor } from '@vueup/vue-quill';
 import '@vueup/vue-quill/dist/vue-quill.snow.css';
 
 const props = defineProps({
   onToggleIsShowFileEdit: Function,
-  formData: Object,
+  title: String,
+  content: String,
   onFormDataUpdate: Function,
 });
+const quill = ref<any>(null);
 
-const onContentUpdate = (newContent: any) => {
-  props.onFormDataUpdate &&
-    props.onFormDataUpdate({ content: newContent.ops[0] });
+// const onContentUpdate = (newContent: any) => {
+//   props.onFormDataUpdate &&
+//     props.onFormDataUpdate({ content: newContent.ops[0] });
+
+//   localStorage.setItem('content', newContent.ops[0].insert);
+//   console.log(newContent.ops[0].insert);
+// };
+const onContentUpdate = () => {
+  if (quill.value) {
+    const newContent = quill.value.getHTML();
+    props.onFormDataUpdate && props.onFormDataUpdate({ content: newContent });
+    localStorage.setItem('content', newContent);
+  }
+};
+
+const onTitleUpdate = (e: any) => {
+  const title = e.target.value;
+
+  if (props.onFormDataUpdate) {
+    if (title.length > 13) {
+      e.target.value = title.slice(0, -1);
+      return alert('제목은 13글자 이내로 작성해주세요');
+    }
+    localStorage.setItem('title', title);
+
+    props.onFormDataUpdate({ title: e.target.value });
+  }
 };
 
 const editorOptions = ref({
@@ -20,27 +46,43 @@ const editorOptions = ref({
   },
   placeholder: '기록할 내용을 입력해주세요. (1,500자 이내)',
 });
-</script>
 
+onMounted(() => {
+  if (quill.value) {
+    quill.value.setHTML(localStorage.getItem('content') || '');
+  }
+});
+</script>
 <template>
   <form @submit.prevent>
     <div class="section">
       <p class="subTitle">제목</p>
       <input
         type="text"
-        @input="onFormDataUpdate && onFormDataUpdate({ title: $event })"
+        @input="onTitleUpdate && onTitleUpdate($event)"
+        :value="title"
       />
     </div>
 
     <div class="section">
-      <QuillEditor
+      <!-- <QuillEditor
+        ref="quill"
         class="post-content"
         theme=""
         toolbar=""
         :options="editorOptions"
         @update:content="onContentUpdate"
       >
-      </QuillEditor>
+      </QuillEditor> -->
+
+      <QuillEditor
+        ref="quill"
+        class="post-content"
+        theme=""
+        toolbar=""
+        :options="editorOptions"
+        @update:content="onContentUpdate"
+      />
     </div>
   </form>
 </template>
