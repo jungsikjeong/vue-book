@@ -49,6 +49,7 @@
   padding: 1rem;
   background-color: $white-color;
   font-size: 1.1rem;
+  z-index: 999;
 }
 .footer-list {
   display: flex;

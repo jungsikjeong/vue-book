@@ -24,7 +24,7 @@ const onPostMoreBtnClick = async () => {
   }
 };
 
-const onPostList = async () => {
+const fetchData = async () => {
   if (!posts.value || posts.value === undefined) {
     isLoading.value = true;
     const data = await fetchPostList();
@@ -36,7 +36,7 @@ const onPostList = async () => {
   }
 };
 
-onMounted(onPostList);
+onMounted(fetchData);
 </script>
 
 <template>

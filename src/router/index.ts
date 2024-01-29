@@ -6,8 +6,8 @@ import SearchView from '@/views/SearchView.vue';
 import WriterView from '@/views/WriterView.vue';
 import NotificationView from '@/views/NotificationView.vue';
 import MyPageView from '@/views/MyPageView.vue';
-import LoginViewVue from '@/views/LoginView.vue';
-import KakaoCallBackVue from '@/components/social-login/KakaoCallBack.vue';
+import LoginView from '@/views/LoginView.vue';
+import KakaoCallBack from '@/components/social-login/KakaoCallBack.vue';
 import PostDetailView from '@/views/PostDetailView.vue';
 import UserInfoView from '@/views/UserInfoView.vue';
 
@@ -22,7 +22,7 @@ const router = createRouter({
     {
       path: '/login',
       name: 'Login',
-      component: LoginViewVue,
+      component: LoginView,
     },
     {
       path: '/following',
@@ -63,7 +63,7 @@ const router = createRouter({
     {
       path: '/callback/kakaotalk',
       name: 'kakaotalk',
-      component: KakaoCallBackVue,
+      component: KakaoCallBack,
     },
   ],
 });
