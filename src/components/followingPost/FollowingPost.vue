@@ -12,7 +12,6 @@ import { useStore } from 'vuex';
 const store = useStore();
 
 const props = defineProps(['postItem']);
-// console.log(props.postItem);
 
 const modules = ref([Navigation, Pagination]);
 const currentPage = ref(1);

@@ -13,6 +13,10 @@ const user = ref(store.getters['userStore/getUser']);
 const commentValue = ref('');
 const commentList = ref();
 
+const onPostLikeClick = () => {
+  props.onLikeClick(props?.postItem?.id, user?.value?.uid);
+};
+
 const onSubmit = async () => {
   if (commentValue.value.length === 0 || commentValue.value == '') {
     return alert('댓글을 입력해주세요.');
@@ -43,9 +47,9 @@ onMounted(async () => {
     <div class="icon-wrap">
       <font-awesome-icon
         icon="heart"
-        @click="onLikeClick"
+        @click="onPostLikeClick"
         class="pointer"
-      /><span class="count"> 0 </span>
+      /><span class="count"> {{ postItem?.like?.length }} </span>
 
       <font-awesome-icon icon="comment" />
       <span class="count">

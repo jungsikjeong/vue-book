@@ -33,6 +33,10 @@ const onSubmit = async () => {
   commentValue.value = '';
 };
 
+const onPostLikeClick = () => {
+  props.onLikeClick(props?.postItem?.id, user?.value);
+};
+
 onMounted(async () => {
   commentList.value = await fetchComment(props?.postItem.id);
 });
@@ -43,9 +47,9 @@ onMounted(async () => {
     <div class="icon-wrap">
       <font-awesome-icon
         icon="heart"
-        @click="onLikeClick"
+        @click="onPostLikeClick"
         class="pointer"
-      /><span class="count"> 0 </span>
+      /><span class="count"> {{ postItem?.like?.length }} </span>
 
       <font-awesome-icon icon="comment" />
       <span class="count">

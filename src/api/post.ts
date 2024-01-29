@@ -120,6 +120,56 @@ export const fetchDetailPost = async (postId: string) => {
   return dataArr;
 };
 
+// 게시글 좋아요 클릭 또는 취소
+export const toggleLikePost = async (postId: string, user: any) => {
+  try {
+    const postRef = doc(db, 'posts', postId);
+    const postDocSnap = await getDoc(postRef);
+
+    if (postDocSnap.exists()) {
+      const postData = postDocSnap.data();
+      const currentLikes = postData.like || [];
+
+      let updatedLikes;
+
+      if (currentLikes.includes(user)) {
+        // 이미 좋아요를 눌렀는데, 다시 클릭하면 좋아요 취소
+        updatedLikes = currentLikes.filter((userId: any) => userId !== user);
+      } else {
+        // 좋아요를 누르지 않은 상태에서 클릭하면 좋아요 추가
+        updatedLikes = [...currentLikes, user];
+      }
+
+      // 좋아요 업데이트
+      await updateDoc(postRef, {
+        like: updatedLikes,
+      });
+
+      // 업데이트된 데이터 가져오기
+      const updatedPostDocSnap = await getDoc(postRef);
+      const updatedPostData: any = { ...updatedPostDocSnap.data(), id: postId };
+
+      // 해당 게시글 작성자 정보 추가
+      const usersRef = collection(db, 'users');
+      if (updatedPostData) {
+        const q = query(usersRef, where('uid', '==', updatedPostData.uid));
+
+        const userDataQuerySnapshot = await getDocs(q);
+
+        userDataQuerySnapshot.forEach((doc) => {
+          const userDataObj: any = { ...doc.data(), id: doc.id };
+          if (userDataObj?.uid === updatedPostData.uid) {
+            updatedPostData.user = userDataObj;
+          }
+        });
+      }
+
+      return updatedPostData;
+    }
+  } catch (error) {
+    console.error(error);
+  }
+};
 // 내가 좋아요누른 게시물 확인
 export const fetchMyPostLikeList = async (userId: string) => {
   const usersRef = doc(db, 'users', userId);

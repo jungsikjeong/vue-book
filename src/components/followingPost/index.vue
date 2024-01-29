@@ -2,6 +2,7 @@
 import { ref, onMounted, onUnmounted } from 'vue';
 import { useStore } from 'vuex';
 import { fetchFollowingPostList } from '../../api/following';
+import { toggleLikePost } from '@/api/post';
 
 import FollowingPost from './FollowingPost.vue';
 import FollowingComment from './FollowingComment.vue';
@@ -40,10 +41,24 @@ const loadFetchData = async (page: number, user: any) => {
   }
 };
 
-const onLikeClick = () => {
-  alert('구현준비중입니다..😅');
-};
+const onLikeClick = async (postId: string, user: any) => {
+  const newData: any = await toggleLikePost(postId, user?.uid);
 
+  const oldData = [...postList.value];
+
+  if (newData) {
+    const indexToUpdate = oldData.findIndex((post) => post.id === newData.id);
+
+    if (indexToUpdate !== -1) {
+      // oldData 배열에서 해당 포스트를 newData로 교체
+      oldData[indexToUpdate] = newData;
+      postList.value = oldData;
+      console.log(postList.value);
+    }
+  }
+
+  // await fetchData(page?.value, user);
+};
 const handleScroll = async () => {
   let element: any = scrollComponent.value;
 

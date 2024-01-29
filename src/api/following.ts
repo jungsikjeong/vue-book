@@ -15,7 +15,7 @@ export const fetchFollowingPostList = async (page: number, user: any) => {
   if (user?.following?.length !== 0) {
     const dataArr = [] as any;
 
-    for (const followingUserId of user.following) {
+    for (const followingUserId of user?.following) {
       const postRef = collection(db, 'posts');
 
       const postQuery = query(

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
-import { fetchDetailPost } from '../../api/post';
+import { fetchDetailPost, toggleLikePost } from '../../api/post';
 
 import Post from './Post.vue';
 import Comment from './Comment.vue';
@@ -34,8 +34,9 @@ const fetchData = async () => {
   loading.value = false;
 };
 
-const onLikeClick = () => {
-  alert('구현준비중입니다..😅');
+const onLikeClick = async (postId: string, userId: string) => {
+  await toggleLikePost(postId, userId);
+  await fetchData();
 };
 
 onMounted(fetchData);
