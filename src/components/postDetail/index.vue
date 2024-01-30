@@ -7,7 +7,9 @@ import Post from './Post.vue';
 import Comment from './Comment.vue';
 import Loading from '../Loading.vue';
 import { fetchUserInfo } from '@/api/user';
+import { useStore } from 'vuex';
 
+const store = useStore();
 const paramsId = useRoute().params.id;
 
 const post = ref<string[]>([]);
@@ -37,6 +39,7 @@ const fetchData = async () => {
 const onLikeClick = async (postId: string, userId: string) => {
   await toggleLikePost(postId, userId);
   await fetchData();
+  await store.dispatch('userStore/initAuth');
 };
 
 onMounted(fetchData);

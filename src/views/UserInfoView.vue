@@ -4,12 +4,15 @@ import { useRoute } from 'vue-router';
 import { fetchUserInfo } from '@/api/user';
 import { fetchMyPostLikeList, fetchMyPostList } from '@/api/post';
 import { addFollow, unFollow } from '@/api/follow';
+import { useStore } from 'vuex';
 
 import Button from '../components/button/index.vue';
 import PostItem from '../components/my-page/Post-item.vue';
 import Tab from '../components/tab/index.vue';
 import Loading from '@/components/Loading.vue';
 import SubTitle from '@/components/sub-title/index.vue';
+
+const store = useStore();
 const $route = useRoute();
 
 // 현재 로그인한 유저
@@ -46,12 +49,18 @@ const onFollow = async () => {
 
       isFollow.value = false;
     }
+
+    // 유저정보 최신화
+    await store.dispatch('userStore/initAuth');
   } else {
     alert('로그인이 필요한 서비스입니다.');
   }
 };
 
 const onTapChange = async (name: string) => {
+  if (currentTapName.value === name) {
+    return;
+  }
   currentTapName.value = name;
   if (name === '컬렉션') {
     isLoading.value = true;

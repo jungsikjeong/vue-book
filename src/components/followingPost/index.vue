@@ -53,11 +53,9 @@ const onLikeClick = async (postId: string, user: any) => {
       // oldData 배열에서 해당 포스트를 newData로 교체
       oldData[indexToUpdate] = newData;
       postList.value = oldData;
-      console.log(postList.value);
     }
+    await store.dispatch('userStore/initAuth');
   }
-
-  // await fetchData(page?.value, user);
 };
 const handleScroll = async () => {
   let element: any = scrollComponent.value;

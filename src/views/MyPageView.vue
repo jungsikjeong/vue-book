@@ -18,10 +18,14 @@ const isLoading = ref(false);
 const props = defineProps(['user']);
 
 const onTapChange = async (name: string) => {
+  if (currentTapName.value === name) {
+    return;
+  }
   currentTapName.value = name;
   if (name === '컬렉션') {
     isLoading.value = true;
-    postList.value = await fetchMyPostLikeList(props?.user?.uid);
+
+    postList.value = await fetchMyPostLikeList(props?.user?.likePost);
     isLoading.value = false;
   } else {
     if (props?.user) {

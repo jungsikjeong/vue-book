@@ -140,10 +140,13 @@ export const toggleLikePost = async (postId: string, user: any) => {
         updatedLikes = [...currentLikes, user];
       }
 
-      // 좋아요 업데이트
+      // 게시글 좋아요 업데이트
       await updateDoc(postRef, {
         like: updatedLikes,
       });
+
+      // 유저의 게시글 좋아요 업데이트
+      await toggleLikePostUser(postId, user);
 
       // 업데이트된 데이터 가져오기
       const updatedPostDocSnap = await getDoc(postRef);
@@ -170,33 +173,53 @@ export const toggleLikePost = async (postId: string, user: any) => {
     console.error(error);
   }
 };
-// 내가 좋아요누른 게시물 확인
-export const fetchMyPostLikeList = async (userId: string) => {
-  const usersRef = doc(db, 'users', userId);
-  const userSnap = await getDoc(usersRef);
 
-  const user = { ...userSnap?.data() };
-  if (user.likePost.length !== 0) {
-    for (const postId of user.likePost) {
-      const postData = [];
+// 사용자가 게시글 좋아요 누르면 사용자의 postLike에 저장
+export const toggleLikePostUser = async (postId: string, userId: string) => {
+  try {
+    const userRef = doc(db, 'users', userId);
+    const userDocSnap = await getDoc(userRef);
 
-      const postRef = collection(db, 'posts');
-      const dataArr = [] as any;
+    if (userDocSnap.exists()) {
+      const userData = userDocSnap.data();
+      const currentLikes = userData.likePost || [];
 
-      const q = query(postRef, orderBy('createdAt'), where('id', '==', postId));
+      let updatedLikes;
 
-      const documentSnapshots = await getDocs(q);
+      if (currentLikes.includes(postId)) {
+        // 이미 좋아요를 눌렀는데, 다시 클릭하면 좋아요 취소
+        updatedLikes = currentLikes.filter((post: any) => post !== postId);
+      } else {
+        // 좋아요를 누르지 않은 상태에서 클릭하면 좋아요 추가
+        updatedLikes = [...currentLikes, postId];
+      }
 
-      documentSnapshots.forEach((doc) => {
-        const dataObj = { ...(doc.data() as Post), id: doc.id };
-
-        dataArr.push(dataObj);
+      // 게시글 좋아요 업데이트
+      await updateDoc(userRef, {
+        likePost: updatedLikes,
       });
-      console.log('dataArr:', dataArr);
-      return dataArr;
     }
-  } else {
-    return '';
+  } catch (error) {
+    console.error(error);
+  }
+};
+// 내가 좋아요누른 게시물 확인
+export const fetchMyPostLikeList = async (likePost: string[]) => {
+  try {
+    const postData: any = [];
+    if (likePost.length !== 0) {
+      await Promise.all(
+        likePost.map(async (post: any) => {
+          const defRef = doc(db, 'posts', post);
+          const docSnap = await getDoc(defRef);
+          postData.push({ ...docSnap.data(), id: docSnap.id });
+        })
+      );
+
+      return postData;
+    }
+  } catch (error) {
+    console.error(error);
   }
 };
 

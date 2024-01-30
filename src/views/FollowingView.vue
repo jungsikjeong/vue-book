@@ -4,7 +4,7 @@ import router from '@/router';
 
 import InfoModal from '../components/modal/info-modal/index.vue';
 import FollowingPost from '../components/followingPost/index.vue';
-// import SubTitle from '../components/sub-title/index.vue';
+import SubTitle from '../components/sub-title/index.vue';
 
 const props = defineProps(['user']);
 
@@ -31,11 +31,14 @@ onMounted(() => {});
   <div class="following-container" v-if="props?.user">
     <FollowingPost />
   </div>
-  <!-- <div v-if="props?.user" class="following-wrapper">
+  <div
+    v-if="props?.user && props?.user?.following.length === 0"
+    class="following-wrapper"
+  >
     <div class="not-following">
-      <SubTitle :title="`구현 예정입니다.😅`"></SubTitle>
+      <SubTitle :title="`팔로잉한 유저가 없습니다.😅`"></SubTitle>
     </div>
-  </div> -->
+  </div>
 </template>
 
 <style lang="scss" scoped>
@@ -45,6 +48,8 @@ onMounted(() => {});
 }
 
 .not-following {
+  max-width: 40rem;
+  margin: 0 auto;
   padding: 1rem;
 }
 </style>
