@@ -1,5 +1,6 @@
 import { db } from '@/firebaseApp';
 import {
+  arrayRemove,
   arrayUnion,
   collection,
   doc,
@@ -21,6 +22,52 @@ export const postComment = async (data: any, postId: string) => {
     });
   } catch (error) {
     console.log(error);
+  }
+};
+
+// 댓글 수정하기
+export const editComment = async (
+  commentIndex: number,
+  postId: string,
+  commentPost: any
+) => {
+  try {
+    // 게시글 찾기
+    const postRef = doc(db, 'posts', postId);
+
+    const data = await getDoc(postRef);
+    const comments = data.data()?.comments;
+    comments[commentIndex] = commentPost;
+
+    // 게시글의 댓글 업데이트
+    await updateDoc(postRef, {
+      comments: comments,
+    });
+
+    // 성공 상태 코드 반환
+    return { state: '200' };
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+// 댓글 삭제하기
+export const deleteComment = async (commentIndex: number, postId: string) => {
+  try {
+    // 게시글 찾기
+    const postRef = doc(db, 'posts', postId);
+
+    const data = await getDoc(postRef);
+    const comments = data.data()?.comments;
+    comments.splice(commentIndex, 1);
+
+    await updateDoc(postRef, {
+      comments: comments,
+    });
+
+    return { state: '200' };
+  } catch (error) {
+    console.error(error);
   }
 };
 

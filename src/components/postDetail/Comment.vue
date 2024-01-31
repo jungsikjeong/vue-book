@@ -1,8 +1,15 @@
 <script setup lang="ts">
 import { ref, defineProps, onMounted } from 'vue';
 import { useStore } from 'vuex';
-import { postComment, fetchComment } from '../../api/comment';
+import {
+  postComment,
+  fetchComment,
+  editComment,
+  deleteComment,
+} from '../../api/comment';
 import { onUserRouterMove } from '@/assets/routerMove';
+
+import EditComment from './EditComment.vue';
 
 const store = useStore();
 
@@ -12,9 +19,58 @@ const user = ref(store.getters['userStore/getUser']);
 
 const commentValue = ref('');
 const commentList = ref();
+const editLoading = ref(false);
 
 const onPostLikeClick = () => {
   props.onLikeClick(props?.postItem?.id, user?.value?.uid);
+};
+
+// 댓글 삭제버튼
+const onCommentRemove = async (commentIndex: number, postId: string) => {
+  const isConfirmed = window.confirm('댓글을 삭제하시겠습니까?');
+
+  if (isConfirmed) {
+    try {
+      const result = await deleteComment(commentIndex, postId);
+      if (result?.state === '200') {
+        const data = await fetchComment(props.postItem.id);
+        let dataList: any = [];
+
+        data?.map((item: any) => {
+          dataList = [...dataList, { ...item, isEditMode: false }];
+        });
+        commentList.value = dataList;
+      }
+    } catch (error) {
+      console.error('댓글 삭제 중 오류 발생:', error);
+    }
+  }
+};
+
+// 수정 버튼을 누를 때 해당 댓글의 isEditMode를 토글
+const enterEditMode = (commentItem: any) => {
+  commentItem.isEditMode = !commentItem.isEditMode;
+};
+
+// 댓글 수정 전송
+const onEditSubmit = async (
+  commentIndex: number,
+  postId: string,
+  data: any
+) => {
+  const result = await editComment(commentIndex, postId, data);
+
+  if (result?.state === '200') {
+    editLoading.value = true;
+    const data = await fetchComment(props.postItem.id);
+    let dataList: any = [];
+
+    data?.map((item: any) => {
+      dataList = [...dataList, { ...item, isEditMode: false }];
+    });
+    commentList.value = dataList;
+    editLoading.value = false;
+  }
 };
 
 const onSubmit = async () => {
@@ -38,7 +94,14 @@ const onSubmit = async () => {
 };
 
 onMounted(async () => {
-  commentList.value = await fetchComment(props?.postItem.id);
+  const data = await fetchComment(props?.postItem.id);
+  let dataList: any = [];
+
+  data?.map((item: any) => {
+    dataList = [...dataList, { ...item, isEditMode: false }];
+  });
+
+  commentList.value = dataList;
 });
 </script>
 
@@ -69,7 +132,7 @@ onMounted(async () => {
 
     <div
       class="user-wrap"
-      v-for="commentItem in commentList"
+      v-for="(commentItem, index) in commentList"
       :key="commentItem?.user?.userId"
     >
       <div
@@ -86,11 +149,32 @@ onMounted(async () => {
         >
           {{ commentItem?.user?.displayName }}
         </p>
-        <p>{{ commentItem?.comment?.updateDated?.slice(0, 12) }}</p>
+        <p>{{ commentItem?.comment?.updateDated?.slice(0, 11) }}</p>
+        <p v-if="user?.uid === commentItem?.user?.uid" class="pointer">
+          <span
+            v-if="!commentItem.isEditMode"
+            @click="enterEditMode(commentItem)"
+            >수정</span
+          >
+          <span v-else @click="enterEditMode(commentItem)">취소</span>
+          <span @click="onCommentRemove(index, postItem?.id)"> 삭제</span>
+        </p>
       </div>
 
       <div class="content">
-        {{ commentItem?.comment?.content }}
+        <template v-if="!commentItem.isEditMode">
+          {{ commentItem?.comment?.content }}
+        </template>
+
+        <EditComment
+          :editLoading="editLoading"
+          :user="user"
+          :commentIndex="index"
+          :postId="props?.postItem?.id"
+          :onEditSubmit="onEditSubmit"
+          :content="commentItem?.comment?.content"
+          v-if="commentItem.isEditMode"
+        />
       </div>
     </div>
   </div>
