@@ -113,3 +113,17 @@ export const addUserPostCount = async (userId: string) => {
     console.log(error);
   }
 };
+// 유저가 작성한 postCount 갯수 감소
+export const downUserPostCount = async (userId: string) => {
+  try {
+    if (userId) {
+      const usersDoc = doc(db, 'users', userId);
+
+      await updateDoc(usersDoc, {
+        postCount: increment(-1),
+      });
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};

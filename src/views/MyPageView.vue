@@ -1,7 +1,13 @@
 <script setup lang="ts">
 import { ref, defineProps, onMounted } from 'vue';
 import router from '@/router';
-import { fetchMyPostLikeList, fetchMyPostList } from '@/api/post';
+import {
+  decreasePostCount,
+  deletePost,
+  fetchMyPostLikeList,
+  fetchMyPostList,
+} from '@/api/post';
+import { downUserPostCount } from '@/api/user';
 
 import userSettingModal from '../components/modal/user-setting-modal/index.vue';
 import PostItem from '../components/my-page/Post-item.vue';
@@ -39,6 +45,27 @@ const onTapChange = async (name: string) => {
   }
 };
 
+const getPostList = async () => {
+  if (props?.user) {
+    const postData = await fetchMyPostList(props?.user?.uid);
+    postList.value = postData;
+
+    isLoading.value = false;
+  }
+};
+
+const handlePostDelete = async (postId: string) => {
+  if (postId) {
+    const result = await deletePost(postId);
+    if (result && result.status === 200) {
+      await decreasePostCount();
+      await downUserPostCount(props?.user?.uid);
+
+      await getPostList();
+    }
+  }
+};
+
 const onModalOpen = () => {
   modalShow.value = !modalShow.value;
 };
@@ -59,12 +86,7 @@ onMounted(async () => {
   window.scroll(0, 0);
 
   isLoading.value = true;
-  if (props?.user) {
-    const postData = await fetchMyPostList(props?.user?.uid);
-    postList.value = postData;
-
-    isLoading.value = false;
-  }
+  await getPostList();
 });
 </script>
 
@@ -162,6 +184,7 @@ onMounted(async () => {
           v-for="postItem in postList"
           :key="postItem.id"
           :postItem="postItem"
+          :handlePostDelete="handlePostDelete"
         />
       </div>
     </div>

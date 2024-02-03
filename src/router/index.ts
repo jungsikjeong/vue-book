@@ -4,6 +4,7 @@ import HomeView from '../views/HomeView.vue';
 import FollowingView from '../views/FollowingView.vue';
 import SearchView from '@/views/SearchView.vue';
 import WriterView from '@/views/WriterView.vue';
+import EditPostView from '@/views/EditPostView.vue';
 import NotificationView from '@/views/NotificationView.vue';
 import MyPageView from '@/views/MyPageView.vue';
 import LoginView from '@/views/LoginView.vue';
@@ -39,11 +40,15 @@ const router = createRouter({
       name: 'Writer',
       component: WriterView,
     },
-
     {
       path: '/:id/post',
       name: 'Detail',
       component: PostDetailView,
+    },
+    {
+      path: '/post/edit/:id',
+      name: 'EditPost',
+      component: EditPostView,
     },
     {
       path: '/notification',

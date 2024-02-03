@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, reactive, onUnmounted, defineProps } from 'vue';
+import { ref, reactive, onUnmounted, defineProps, PropType } from 'vue';
 import { Cropper } from 'vue-advanced-cropper';
 import 'vue-advanced-cropper/dist/style.css';
 import { Images } from '../../types/images.d.ts';
@@ -8,9 +8,13 @@ const props = defineProps({
   onToggleIsShowFileEdit: Function,
   isShowFileEdit: Boolean,
   onImagesUpload: Function,
+  imagesFile: Array as PropType<Images[]>,
+  onClickRemoveImage: Function,
 });
 
-const images = reactive<Images[]>([]);
+const images = ref<Images[]>(
+  props.imagesFile && props?.imagesFile?.length !== 0 ? props.imagesFile : []
+);
 
 const image = reactive({
   src: '',
@@ -28,19 +32,22 @@ const onCropImage = async () => {
     const { canvas } = cropper.value.getResult();
     const dataURL = canvas.toDataURL(image.type);
 
-    images.push({ src: dataURL, type: image.type });
+    images.value = [...images.value, { src: dataURL, type: image.type }];
 
     const blob = await fetch(dataURL).then((response) => response.blob());
+
     const imageSubmit = { src: blob, type: image.type };
 
     props.onImagesUpload && props.onImagesUpload(imageSubmit);
     props.onToggleIsShowFileEdit && props.onToggleIsShowFileEdit();
-    loading.value = false;
+    console.log(images);
   }
+
+  loading.value = false;
 };
 
 const onUploadImage = (event: any) => {
-  if (images.length === 4) {
+  if (images.value.length === 4) {
     return alert('이미지는 네개까지만 허용이됩니다.');
   }
   const { files } = event.target;
@@ -50,12 +57,18 @@ const onUploadImage = (event: any) => {
       URL.revokeObjectURL(image.src);
     }
     const blob = URL.createObjectURL(files[0]);
-
     image.src = blob;
     image.type = files[0].type;
 
     props.onToggleIsShowFileEdit && props.onToggleIsShowFileEdit();
   }
+};
+
+const onRemoveImage = (clickIndex: number) => {
+  const dataArray = [...images.value];
+  dataArray.splice(clickIndex, 1);
+  images.value = dataArray;
+  props.onClickRemoveImage && props.onClickRemoveImage(clickIndex);
 };
 
 onUnmounted(() => {
@@ -90,6 +103,7 @@ onUnmounted(() => {
 
     <div class="file-item" v-for="(image, index) in images" :key="index">
       <img :src="image.src" v-if="image.src" />
+      <div class="close-btn pointer" @click="onRemoveImage(index)">X</div>
     </div>
   </div>
 
@@ -124,6 +138,20 @@ onUnmounted(() => {
   position: relative;
   width: 150px;
   height: 150px;
+
+  .close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    text-align: center;
+    font-size: 12px;
+    color: $black-color;
+    font-weight: bold;
+    background-color: #eee;
+  }
 }
 
 .input-file-wrap {
