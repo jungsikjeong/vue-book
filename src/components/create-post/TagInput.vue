@@ -12,8 +12,13 @@ const props = defineProps({
 const newTag = ref('');
 
 const onAddTag = () => {
-  if (newTag.value.trim() !== '' && !props.tags.includes(newTag.value)) {
-    props.onAddTag && props.onAddTag(newTag.value);
+  if (
+    newTag.value.trim() !== '' &&
+    newTag.value.trim().replace(/^\s*#(\s*)/, '') !== '' &&
+    !props.tags.includes(newTag.value)
+  ) {
+    const tag = newTag.value.replace(/\s/g, '');
+    props.onAddTag && props.onAddTag(tag);
 
     newTag.value = '#';
   }
@@ -56,7 +61,7 @@ onBeforeUnmount(() => {
         @click="props.onRemoveTag && props.onRemoveTag(index)"
         :data-index="index"
       >
-        {{ tag }}<button class="cross">X</button>
+        {{ tag }}<button class="close">X</button>
       </li>
       <input
         type="text"
@@ -119,7 +124,7 @@ onBeforeUnmount(() => {
     font-size: 0.875rem;
   }
 }
-.cross {
+.close {
   cursor: pointer;
   color: $cloudy-gray;
   margin-left: 0.5rem;

@@ -114,7 +114,7 @@ const onSubmit = async () => {
     formData.value.content.length > 1500
   ) {
     return alert('내용은 2자~1500자 이내로 작성해주세요');
-  } else if (!tags.value) {
+  } else if (!tags.value || tags.value.length === 0) {
     return alert('태그를 하나 이상 입력해주세요');
   }
 
@@ -124,10 +124,12 @@ const onSubmit = async () => {
 
   try {
     if (uploadedImageFileName.value) {
+      const tagsWithoutHash = tags.value.map((tag) => tag.substring(1));
+
       await addDoc(collection(db, 'posts'), {
         title: formData.value.title,
         content: formData.value.content,
-        tags: tags.value,
+        tags: tagsWithoutHash,
         imageUrl: uploadedImageFileName.value,
         like: [],
         comment: [],

@@ -85,7 +85,7 @@ onMounted(() => {
 
     <ul class="post-tags">
       <li class="post-tags__tag" v-for="tag in props?.postItem.tags" :key="tag">
-        {{ tag }}
+        {{ '#' + tag }}
       </li>
     </ul>
 

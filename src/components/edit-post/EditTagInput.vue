@@ -12,13 +12,17 @@ const props = defineProps({
 const newTag = ref('');
 
 const onAddTag = () => {
-  if (newTag.value.trim() !== '' && !props.tags.includes(newTag.value)) {
-    props.onAddTag && props.onAddTag(newTag.value);
+  if (
+    newTag.value.trim() !== '' &&
+    newTag.value.trim().replace(/^\s*#(\s*)/, '') !== '' &&
+    !props.tags.includes(newTag.value)
+  ) {
+    const tag = newTag.value.replace(/\s/g, '');
+    props.onAddTag && props.onAddTag(tag);
 
     newTag.value = '#';
   }
 };
-
 const onChangeInput = (e: any) => {
   if (e.target.value === '') {
     newTag.value = '#';

@@ -1,19 +1,21 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue';
-import { dummyUsersFn, dummyPostsFn } from '../assets/dummyData';
 
 import SubTitle from '../components/sub-title/index.vue';
 import Tab from '../components/tab/index.vue';
 import ResultList from '../components/search/ResultList.vue';
+import { fetchSearchPostData, fetchSearchUserData } from '@/api/search';
 
 const focusState = ref(false);
 const inputState = ref('');
-const isOnsearch = ref(false); // 검색어를 누르거나, 엔터를누르면 true가됨
+const isOnSearchBar = ref(false); // 검색어를 누르거나, 엔터를누르면 true가됨
 const currentTapName = ref('유저들');
+const isLoading = ref(false);
 
-const dummyUsers = ref(dummyUsersFn());
-const dummyPosts = ref(dummyPostsFn());
+const searchUserList = ref<any[]>([]);
+const searchPostList = ref<any[]>([]);
 
+// 인기검색어들
 const popularSearch = [
   '운동',
   '그림',
@@ -31,11 +33,30 @@ let getKeyword = ref(
   JSON.parse(localStorage.getItem('search-keyword') || '[]')
 );
 
-const onTapChange = (name: string) => {
+const onTapChange = async (name: string) => {
   currentTapName.value = name;
+
+  if (currentTapName.value === '유저들') {
+    isLoading.value = true;
+    const result = await fetchSearchUserData(inputState.value);
+    if (result?.status === 200) {
+      isOnSearchBar.value = true;
+      searchUserList.value = result.users;
+      isLoading.value = false;
+    }
+  } else if (currentTapName.value === '기록들') {
+    isLoading.value = true;
+    const result = await fetchSearchPostData(inputState.value);
+    if (result?.status === 200) {
+      isOnSearchBar.value = true;
+      searchPostList.value = result.posts;
+      isLoading.value = false;
+    }
+  }
+  isLoading.value = false;
 };
 
-const onSubmit = (e: any) => {
+const onSubmit = async (e: any) => {
   const searchTextValue = e.target.value;
 
   if (searchTextValue) {
@@ -53,18 +74,35 @@ const onSubmit = (e: any) => {
     localStorage.setItem('search-keyword', JSON.stringify(copyGetKeyword));
     getKeyword.value = copyGetKeyword;
 
-    isOnsearch.value = true;
-    e.target.value = '';
+    if (currentTapName.value === '유저들') {
+      isLoading.value = true;
+      const result = await fetchSearchUserData(inputState.value);
+      if (result?.status === 200) {
+        isOnSearchBar.value = true;
+        searchUserList.value = result.users;
+        isLoading.value = false;
+      }
+    } else if (currentTapName.value === '기록들') {
+      isLoading.value = true;
+      const result = await fetchSearchPostData(inputState.value);
+      if (result?.status === 200) {
+        isOnSearchBar.value = true;
+        searchPostList.value = result.posts;
+        isLoading.value = false;
+      }
+    }
+    isLoading.value = false;
+    isOnSearchBar.value = true;
   }
 };
 
 const onSearchCancel = () => {
   inputState.value = '';
-  isOnsearch.value = false;
+  isOnSearchBar.value = false;
 };
 
 // 검색어 클릭
-const onSearchWordClick = (e: any) => {
+const onSearchWordClick = async (e: any) => {
   inputState.value = e.target.innerText;
 
   const copyGetKeyword = [...getKeyword.value];
@@ -80,7 +118,37 @@ const onSearchWordClick = (e: any) => {
 
   localStorage.setItem('search-keyword', JSON.stringify(copyGetKeyword));
   getKeyword.value = copyGetKeyword;
-  isOnsearch.value = true;
+
+  if (currentTapName.value === '유저들') {
+    isLoading.value = true;
+    const result = await fetchSearchUserData(inputState.value);
+    if (result?.status === 200) {
+      isOnSearchBar.value = true;
+      searchUserList.value = result.users;
+      isLoading.value = false;
+    }
+  } else if (currentTapName.value === '기록들') {
+    isLoading.value = true;
+    const result = await fetchSearchPostData(inputState.value);
+    if (result?.status === 200) {
+      isOnSearchBar.value = true;
+      searchPostList.value = result.posts;
+      isLoading.value = false;
+    }
+  }
+  isLoading.value = false;
+  isOnSearchBar.value = true;
+};
+
+// 최근 검색어 삭제
+const onKeywordRemove = (keyword: string) => {
+  const copyGetKeyword = [...getKeyword.value];
+  const test = copyGetKeyword.findIndex((element) => element === keyword);
+  if (test != -1) {
+    copyGetKeyword.splice(test, 1);
+    localStorage.setItem('search-keyword', JSON.stringify(copyGetKeyword));
+    getKeyword.value = copyGetKeyword;
+  }
 };
 
 // 검색어 전체 지우기
@@ -88,7 +156,7 @@ const onAllRemove = () => {
   localStorage.setItem('search-keyword', '');
   getKeyword.value = '';
   inputState.value = '';
-  isOnsearch.value = false;
+  isOnSearchBar.value = false;
 };
 
 const onClickOutside = (e: any) => {
@@ -112,7 +180,7 @@ onUnmounted(() => {
 
 <template>
   <div class="container">
-    <section class="wrapper" :class="{ fixed: isOnsearch }">
+    <section class="wrapper" :class="{ fixed: isOnSearchBar }">
       <input
         type="text"
         placeholder="&#xF002; 뷰북의 기록들을 검색해보세요"
@@ -132,38 +200,39 @@ onUnmounted(() => {
         :currentTapName="currentTapName"
         :onTapChange="onTapChange"
         :names="['유저들', '기록들']"
-        v-if="isOnsearch"
+        v-if="isOnSearchBar"
         style="margin-top: 1rem"
       />
     </section>
 
     <!-- 검색한 결과물 -->
     <ResultList
-      v-if="isOnsearch"
-      :dummyUsers="dummyUsers"
-      :dummyPosts="dummyPosts"
+      v-if="isOnSearchBar"
+      :searchUserList="searchUserList"
+      :searchPostList="searchPostList"
       :currentTapName="currentTapName"
+      :isLoading="isLoading"
     />
 
-    <section class="wrapper" v-if="getKeyword.length > 0 && !isOnsearch">
+    <!-- 최근 검색어 -->
+    <section class="wrapper" v-if="getKeyword.length > 0 && !isOnSearchBar">
       <div class="flex-box">
         <SubTitle :title="`최근 검색어`"></SubTitle>
         <button class="remove-all-btn" @click="onAllRemove">모두 지우기</button>
       </div>
 
       <ul class="tags">
-        <li
-          class="tag"
-          v-for="keyword in getKeyword"
-          :key="keyword"
-          @click="onSearchWordClick"
-        >
-          {{ keyword }}
+        <li class="tag" v-for="keyword in getKeyword" :key="keyword">
+          <span @click="onSearchWordClick">
+            {{ keyword }}
+          </span>
+          <button class="close-btn" @click="onKeywordRemove(keyword)">X</button>
         </li>
       </ul>
     </section>
 
-    <section class="wrapper" v-if="!isOnsearch">
+    <!-- 인기 검색어 -->
+    <section class="wrapper" v-if="!isOnSearchBar">
       <SubTitle :title="`인기 검색어`"></SubTitle>
 
       <ul class="tags">
@@ -230,6 +299,14 @@ onUnmounted(() => {
   display: inline;
 }
 
+.close-btn {
+  cursor: pointer;
+  color: $cloudy-gray;
+  margin-left: 0.5rem;
+  width: 16px;
+  height: 16px;
+}
+
 .active {
   width: 90%;
 }
@@ -265,4 +342,3 @@ onUnmounted(() => {
   cursor: pointer;
 }
 </style>
-../assets/dummyData
