@@ -246,11 +246,12 @@ onMounted(async () => {
   const data = await fetchDetailPost(paramsId);
   if (data) {
     oldData.value = data[0];
-    localStorage.setItem('tags', JSON.stringify(data[0].tags));
+    const hashTags = data[0].tags.map((tag: string) => `#${tag}`);
+
+    localStorage.setItem('tags', JSON.stringify(hashTags));
     localStorage.setItem('title', data[0].title);
     localStorage.setItem('content', data[0].content);
     formData.value = { title: data[0].title, content: data[0].content };
-    tags.value = data[0].tags;
 
     if (data[0].imageUrl.length !== 0) {
       imagesFile.value = data[0].imageUrl;

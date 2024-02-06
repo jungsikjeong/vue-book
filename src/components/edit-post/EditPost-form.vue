@@ -58,16 +58,6 @@ onMounted(() => {
     </div>
 
     <div class="section">
-      <!-- <QuillEditor
-        ref="quill"
-        class="post-content"
-        theme=""
-        toolbar=""
-        :options="editorOptions"
-        @update:content="onContentUpdate"
-      >
-      </QuillEditor> -->
-
       <QuillEditor
         ref="quill"
         class="post-content"

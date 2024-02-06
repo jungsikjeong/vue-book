@@ -149,10 +149,10 @@ const onSubmit = async () => {
       alert('게시글 업로드를 완료했습니다.');
       isLoading.value = false;
 
-      localStorage.removeItem('title'),
-        localStorage.removeItem('content'),
-        localStorage.removeItem('tags'),
-        router.push('/');
+      localStorage.removeItem('title');
+      localStorage.removeItem('content');
+      localStorage.removeItem('tags');
+      router.push('/');
     }
   } catch (error) {
     // 게시글 업로드중 오류가 발생했을 경우,
