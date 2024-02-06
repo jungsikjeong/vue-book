@@ -22,6 +22,7 @@ const modalShow = ref(false);
 const isLoading = ref(false);
 
 const props = defineProps(['user']);
+console.log(props.user);
 
 const onTapChange = async (name: string) => {
   if (currentTapName.value === name) {
@@ -32,9 +33,8 @@ const onTapChange = async (name: string) => {
     isLoading.value = true;
 
     postList.value = await fetchMyPostLikeList(props?.user?.likePost);
-
     isLoading.value = false;
-  } else {
+  } else if (name === '기록') {
     if (props?.user) {
       isLoading.value = true;
 
@@ -89,6 +89,7 @@ onMounted(async () => {
   isLoading.value = true;
   await getPostList();
 });
+onMounted(async () => {});
 </script>
 
 <template>
@@ -159,7 +160,6 @@ onMounted(async () => {
       />
 
       <Loading v-if="isLoading" />
-
       <div class="grid" v-if="!isLoading">
         <router-link to="/writer" v-if="currentTapName !== '컬렉션'">
           <div class="box post-add-btn">

@@ -85,7 +85,6 @@ const onUserInfoGet = async () => {
   isLoading.value = true;
   const data = await fetchUserInfo($route?.params?.id as string);
   userInfo.value = data[0];
-  console.log(userInfo.value);
 
   postList.value = await fetchMyPostList($route?.params?.id as string);
   if (props?.user) {

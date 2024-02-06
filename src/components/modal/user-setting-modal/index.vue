@@ -18,7 +18,6 @@ const props = defineProps({ onModalOpen: Function });
 const user = ref(store.getters['userStore/getUser']);
 const profileViewState = ref(false);
 const isUserInfoModal = ref(false);
-
 const onProfileView = () => {
   profileViewState.value = !profileViewState.value;
 };

@@ -1,31 +1,102 @@
 <script setup lang="ts">
-import { db } from '@/firebaseApp';
+import { app, db } from '@/firebaseApp';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
-
+import {
+  ref as storageRef,
+  deleteObject,
+  getStorage,
+  uploadBytes,
+  getDownloadURL,
+} from 'firebase/storage';
+import { v4 as uuidv4 } from 'uuid';
 import { defineProps, onMounted, ref } from 'vue';
 import { useStore } from 'vuex';
 
 const store = useStore();
-const user = ref('') as any;
-const displayName = ref('');
-const description = ref('');
+const storage = getStorage(app);
+
+const user = ref('') as any; // 유저 정보
+const displayName = ref(''); // 유저 이름
+const description = ref(''); // 유저 자기소개
+const photoURL = ref<any>(''); // 유저 이미지
+const imgAddress = ref(''); // 업로드 성공하고 반환된 유저 이미지 url
+
+// 유저 이미지를 수정했을때 반환되는 Base64
+const previewImage = ref<any>();
+const file = ref<File | null>(null);
 
 const props = defineProps({
   profileViewState: Boolean,
   onProfileView: Function,
 });
 
+// 이미지 blob객체로 변환
+const onImageToBlob = async (event: any) => {
+  const { files } = event.target;
+
+  const reader = new FileReader();
+
+  if (files && files[0]) {
+    reader.readAsDataURL(files[0]);
+
+    file.value = files[0];
+    reader.onloadend = function () {
+      // 이미지 미리보기
+      previewImage.value = reader.result;
+    };
+  }
+};
+
+const handleUploadImages = async () => {
+  try {
+    // 이미지 바뀐게 없다면 아무것도 안함
+    if (!file.value) {
+      return { status: 200 };
+    }
+
+    // 이미지를 변경했다면,
+    // 기존 이미지 지우기
+    if (file.value && photoURL?.value) {
+      let imageRef = storageRef(storage, photoURL.value as any);
+
+      await deleteObject(imageRef);
+    }
+
+    const fileName = uuidv4() + '.user-img';
+    await uploadBytes(storageRef(storage, 'images/' + fileName), file.value);
+
+    imgAddress.value = await getDownloadURL(
+      storageRef(storage, `images/${fileName}`)
+    );
+
+    return { status: 200 };
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 const onSubmit = async () => {
+  if (displayName?.value.length > 13) {
+    return alert('유저닉네임은 12글자이하로 지어주세요');
+  }
+
   if (props?.onProfileView && user.value) {
     try {
-      const userRef = doc(db, 'users', user.value.uid);
+      const result = await handleUploadImages();
 
-      await updateDoc(userRef, {
-        displayName: displayName.value.trim() || user.value.displayName,
-        description: description.value || user.value.description || '',
-      });
-      alert('프로필 수정완료');
-      props.onProfileView();
+      if (result?.status === 200) {
+        const userRef = doc(db, 'users', user.value.uid);
+
+        await updateDoc(userRef, {
+          displayName: displayName.value.trim() || user.value.displayName,
+          description: description.value || user.value.description || '',
+          photoURL: imgAddress?.value ? imgAddress.value : photoURL.value,
+        });
+        alert('프로필 수정완료');
+
+        props.onProfileView();
+        await store.dispatch('userStore/initAuth');
+      }
     } catch (error) {
       alert('요청에 실패했습니다..');
       console.log(error);
@@ -41,6 +112,7 @@ onMounted(async () => {
     user.value = docSnap.data();
     displayName.value = user.value.displayName;
     description.value = user.value.description;
+    photoURL.value = user.value.photoURL;
   }
 });
 </script>
@@ -59,10 +131,7 @@ onMounted(async () => {
 
   <div class="user">
     <div class="user-image-wrap">
-      <img
-        src="https://post-phinf.pstatic.net/MjAyMjA3MjJfMTk2/MDAxNjU4NDcyMTk2NTcw.jZoVZZWQgyt0XMrxEMpHPVChhKRS9tOx-Cdwn2Jee68g.l-3xnhNzAuLwO4pa-0gZf5hs5zzfEtKuPtVHM29gcxog.JPEG/220721_%EC%97%90%EC%8A%A4%ED%8C%8C_%EC%B9%B4%EB%A6%AC%EB%82%98_3.jpg?type=w800_q75"
-        alt=""
-      />
+      <img :src="previewImage ? previewImage : photoURL" alt="" />
 
       <label for="avatar" class="input-file-text pointer">편집</label>
       <input
@@ -71,6 +140,7 @@ onMounted(async () => {
         name="avatar"
         accept="image/png, image/jpeg"
         class="input-file"
+        @change="onImageToBlob($event)"
       />
     </div>
 

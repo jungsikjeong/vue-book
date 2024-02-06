@@ -40,7 +40,6 @@ const onCropImage = async () => {
 
     props.onImagesUpload && props.onImagesUpload(imageSubmit);
     props.onToggleIsShowFileEdit && props.onToggleIsShowFileEdit();
-    console.log('images:', images);
   }
 
   loading.value = false;

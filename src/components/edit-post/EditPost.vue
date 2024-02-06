@@ -77,7 +77,6 @@ const onImagesUpload = (images: any) => {
   copyArrayData.push(images);
 
   imagesFile.value = copyArrayData;
-  // imagesEditFile.value.push(images);
   imagesEditFile.value = copyArrayData;
 };
 
