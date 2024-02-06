@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { onMounted } from 'vue';
+
 import PostDetail from '../components/postDetail/index.vue';
 
 onMounted(() => {

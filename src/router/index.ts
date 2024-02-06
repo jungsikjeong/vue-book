@@ -11,6 +11,8 @@ import LoginView from '@/views/LoginView.vue';
 import KakaoCallBack from '@/components/social-login/KakaoCallBack.vue';
 import PostDetailView from '@/views/PostDetailView.vue';
 import UserInfoView from '@/views/UserInfoView.vue';
+import FollowerListView from '@/views/FollowerListView.vue';
+import FollowingListView from '@/views/FollowingListView.vue';
 
 const router = createRouter({
   history: createWebHistory(),
@@ -59,6 +61,16 @@ const router = createRouter({
       path: '/myPage',
       name: 'MyPage',
       component: MyPageView,
+    },
+    {
+      path: '/myPage/:id/follower',
+      name: 'MyPageFollower',
+      component: FollowerListView,
+    },
+    {
+      path: '/myPage/:id/following',
+      name: 'MyPageFollowing',
+      component: FollowingListView,
     },
     {
       path: '/:id/user',

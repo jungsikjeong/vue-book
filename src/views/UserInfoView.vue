@@ -65,7 +65,6 @@ const onTapChange = async (name: string) => {
   currentTapName.value = name;
 
   if (name === '컬렉션') {
-    console.log('userInfo?.value?.uid:', userInfo?.value?.uid);
     isLoading.value = true;
     postList.value = await fetchMyPostLikeList(userInfo?.value?.uid);
     isLoading.value = false;
@@ -99,6 +98,26 @@ onMounted(onUserInfoGet);
 <template>
   <Loading v-if="isLoading" />
   <div class="container" v-if="!isLoading">
+    <div class="header">
+      <span class="back-btn pointer" @click="$router.go(-1)">
+        <svg
+          width="24"
+          height="25"
+          viewBox="0 0 24 25"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M15 18.5L9 12.5L15 6.5"
+            stroke="#101010"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          ></path>
+        </svg>
+      </span>
+    </div>
+
     <div>
       <div class="section">
         <div class="user-info-wrap">
@@ -194,6 +213,10 @@ onMounted(onUserInfoGet);
   max-width: 40rem;
   margin: 0 auto;
   padding: 1rem;
+}
+.header {
+  border: none;
+  padding-bottom: 1rem;
 }
 .myPage-header {
   display: flex;

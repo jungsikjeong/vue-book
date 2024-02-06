@@ -3,7 +3,11 @@ import {
   arrayUnion,
   collection,
   doc,
+  getDocs,
+  orderBy,
+  query,
   updateDoc,
+  where,
 } from 'firebase/firestore';
 import { fetchUserInfo } from './user';
 import { db } from '@/firebaseApp';
@@ -64,6 +68,26 @@ export const unFollow = async (othersUserId: string, myUser: any) => {
 
         return;
       }
+    }
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+// 팔로우한 유저 목록들
+export const fetchFollowerList = async (userId: string) => {
+  try {
+    let data: any[] = [];
+
+    const user = await fetchUserInfo(userId);
+
+    if (user.length !== 0) {
+      for (const item of user[0].followers) {
+        const followerUser = await fetchUserInfo(item);
+
+        data = [...data, ...followerUser];
+      }
+      return { status: 200, data };
     }
   } catch (error) {
     console.error(error);

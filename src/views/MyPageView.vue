@@ -22,7 +22,6 @@ const modalShow = ref(false);
 const isLoading = ref(false);
 
 const props = defineProps(['user']);
-console.log(props.user);
 
 const onTapChange = async (name: string) => {
   if (currentTapName.value === name) {
@@ -79,8 +78,12 @@ const onCloseModal = () => {
   router.go(-1);
 };
 
-const onClick = () => {
-  alert('구현예정입니다.😅');
+const onClick = (clicked: string) => {
+  if (clicked === '팔로워') {
+    router.push(`/myPage/${props?.user.uid}/follower`);
+  } else if (clicked === '팔로잉') {
+    router.push(`/myPage/${props?.user.uid}/following`);
+  }
 };
 
 onMounted(async () => {
@@ -89,7 +92,6 @@ onMounted(async () => {
   isLoading.value = true;
   await getPostList();
 });
-onMounted(async () => {});
 </script>
 
 <template>
@@ -117,11 +119,7 @@ onMounted(async () => {});
           <img class="user-image" :src="props.user?.photoURL" alt="" />
         </div>
         <div class="user-record-wrap">
-          <div
-            :class="{ isVisible: props?.user?.postCount !== 0 }"
-            class="pointer"
-            @click="onClick"
-          >
+          <div :class="{ isVisible: props?.user?.postCount !== 0 }">
             <p>{{ props?.user?.postCount }}</p>
             <p class="user-record-text">기록</p>
           </div>
@@ -129,7 +127,7 @@ onMounted(async () => {});
           <div
             :class="{ isVisible: props?.user?.followers?.length !== 0 }"
             class="pointer"
-            @click="onClick"
+            @click="onClick('팔로워')"
           >
             <p>{{ props?.user?.followers?.length }}</p>
             <p class="user-record-text">팔로워</p>
@@ -138,7 +136,7 @@ onMounted(async () => {});
           <div
             :class="{ isVisible: props?.user?.following?.length !== 0 }"
             class="pointer"
-            @click="onClick"
+            @click="onClick('팔로잉')"
           >
             <p>{{ props?.user?.following.length }}</p>
             <p class="user-record-text">팔로잉</p>

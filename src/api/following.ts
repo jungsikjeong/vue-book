@@ -9,6 +9,7 @@ import {
 } from 'firebase/firestore';
 import { db } from '@/firebaseApp';
 import { Post } from '../types/post.d.ts';
+import { fetchUserInfo } from './user';
 
 // 팔로잉한 유저의 게시물 불러오기
 export const fetchFollowingPostList = async (page: number, user: any) => {
@@ -103,5 +104,25 @@ export const fetchFollowingPostList = async (page: number, user: any) => {
     });
 
     return { dataArr, limitCount };
+  }
+};
+
+// 팔로잉한 유저 목록들
+export const fetchFollowingList = async (userId: string) => {
+  try {
+    let data: any[] = [];
+
+    const user = await fetchUserInfo(userId);
+
+    if (user.length !== 0) {
+      for (const item of user[0].following) {
+        const followerUser = await fetchUserInfo(item);
+
+        data = [...data, ...followerUser];
+      }
+      return { status: 200, data };
+    }
+  } catch (error) {
+    console.error(error);
   }
 };
