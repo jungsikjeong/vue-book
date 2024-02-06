@@ -26,8 +26,8 @@ onMounted(() => {
     <router-link :to="'/' + postItem?.id + '/post'">
       <div class="box">
         <img
-          :src="props.postItem.imageUrl[0].src"
-          :key="props.postItem.imageUrl[0].src"
+          :src="props.postItem.imageUrl[0]?.src"
+          :key="props.postItem.imageUrl[0]?.src"
           alt=""
         />
       </div>

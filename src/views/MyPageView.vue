@@ -32,6 +32,7 @@ const onTapChange = async (name: string) => {
     isLoading.value = true;
 
     postList.value = await fetchMyPostLikeList(props?.user?.likePost);
+
     isLoading.value = false;
   } else {
     if (props?.user) {

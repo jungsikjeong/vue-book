@@ -47,7 +47,8 @@ const isDataLoading = ref(false);
 // 해당 이미지 삭제 (local)
 const onClickRemoveImage = (index: number) => {
   const dataArray = [...imagesFile.value];
-  const dataArray2 = [...imagesEditFile.value];
+  const imagesEditFileCopyArray = [...imagesEditFile.value];
+
   const src = dataArray[index].src;
 
   // 기존 파이어베이스 스토리지에 올라간거를 삭제버튼눌렀을때
@@ -57,11 +58,16 @@ const onClickRemoveImage = (index: number) => {
   }
 
   dataArray.splice(index, 1);
-  dataArray2.splice(index, 1);
 
-  console.log(dataArray2);
+  // Blob객체만 삭제
+  for (const img of imagesEditFileCopyArray) {
+    if (img?.src instanceof Blob) {
+      imagesEditFileCopyArray.splice(index, 1);
+      imagesEditFile.value = imagesEditFileCopyArray;
+    }
+  }
+
   imagesFile.value = dataArray;
-  imagesEditFile.value = dataArray2;
 };
 
 // Fire-form.vue에서 onCropImage를 누르면 발동됨
@@ -71,7 +77,8 @@ const onImagesUpload = (images: any) => {
   copyArrayData.push(images);
 
   imagesFile.value = copyArrayData;
-  imagesEditFile.value.push(images);
+  // imagesEditFile.value.push(images);
+  imagesEditFile.value = copyArrayData;
 };
 
 const onFormDataUpdate = ({ title, content }: any) => {
@@ -117,9 +124,14 @@ const handleRemoveImages = async () => {
 
 // 이미지 업로드함수
 const handleUploadImages = async () => {
-  // 만약 업로드할 이미지가 없으면 성공을 반환
-  if (imagesEditFile.value.length === 0) {
-    return { status: 200 };
+  // 만약 업로드할 이미지가 없으면 200상태코드 반환
+  if (imagesEditFile.value.length === 0) return { status: 200 };
+
+  // 추가한 이미지에 Blob객체가 없어도 반환
+  for (const img of imagesEditFile?.value) {
+    if (!(img?.src instanceof Blob)) {
+      return { status: 200 };
+    }
   }
 
   // 기존 이미지 지우기
@@ -127,13 +139,15 @@ const handleUploadImages = async () => {
     await handleRemoveImages();
   }
 
-  for (let i = 0; i < imagesEditFile.value.length; i++) {
-    const image = imagesEditFile.value[i];
+  for (let i = 0; i < imagesFile.value.length; i++) {
     try {
+      const image = imagesFile.value;
+      const blobImages = image.filter((img: any) => img.src instanceof Blob);
+
       const fileName = uuidv4();
       await uploadBytes(
         storageRef(storage, 'images/' + fileName),
-        image.src as any
+        blobImages[i].src as any
       );
       // 성공적으로 업로드된 경우 실행할 코드
       const imgAddress = await getDownloadURL(
@@ -227,6 +241,7 @@ const onSubmit = async () => {
 onMounted(() => {
   if (!user.value) return alert('로그인이 필요합니다.');
 });
+
 onMounted(async () => {
   isDataLoading.value = true;
   const data = await fetchDetailPost(paramsId);

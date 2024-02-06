@@ -61,8 +61,11 @@ const onTapChange = async (name: string) => {
   if (currentTapName.value === name) {
     return;
   }
+
   currentTapName.value = name;
+
   if (name === '컬렉션') {
+    console.log('userInfo?.value?.uid:', userInfo?.value?.uid);
     isLoading.value = true;
     postList.value = await fetchMyPostLikeList(userInfo?.value?.uid);
     isLoading.value = false;
@@ -82,6 +85,7 @@ const onUserInfoGet = async () => {
   isLoading.value = true;
   const data = await fetchUserInfo($route?.params?.id as string);
   userInfo.value = data[0];
+  console.log(userInfo.value);
 
   postList.value = await fetchMyPostList($route?.params?.id as string);
   if (props?.user) {
@@ -134,7 +138,7 @@ onMounted(onUserInfoGet);
       </div>
 
       <!-- 팔로우 버튼 -->
-      <div>
+      <div v-if="props?.user?.uid !== $route?.params?.id">
         <Button
           :title="`팔로우`"
           :onBtnClick="onFollow"

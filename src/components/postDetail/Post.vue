@@ -20,7 +20,6 @@ const TextLimitLength = ref(150);
 const showMoreBtn = ref(false);
 const isMoreContent = ref(false);
 const user = ref(store.getters['userStore/getUser']);
-
 const onHotTopic = async () => {
   const data = {
     postId: props?.postItem?.id,

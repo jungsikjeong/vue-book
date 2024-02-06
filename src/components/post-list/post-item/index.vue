@@ -27,8 +27,8 @@ onMounted(() => {
     <router-link :to="'/' + props.postItem.id + '/post'">
       <div class="image-wrap">
         <img
-          :src="props.postItem.imageUrl[0].src"
-          :alt="`image${props.postItem.imageUrl[0].src}`"
+          :src="props.postItem?.imageUrl[0]?.src"
+          :alt="`image${props.postItem.imageUrl[0]?.src}`"
           class="main-image"
         />
       </div>

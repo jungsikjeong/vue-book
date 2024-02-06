@@ -40,7 +40,7 @@ const onCropImage = async () => {
 
     props.onImagesUpload && props.onImagesUpload(imageSubmit);
     props.onToggleIsShowFileEdit && props.onToggleIsShowFileEdit();
-    console.log(images);
+    console.log('images:', images);
   }
 
   loading.value = false;
@@ -189,6 +189,6 @@ img {
   width: 100%;
   height: 100%;
   position: absolute;
-  object-fit: cover;
+  //object-fit: cover;
 }
 </style>
