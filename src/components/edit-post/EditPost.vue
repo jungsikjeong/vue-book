@@ -35,10 +35,12 @@ const imagesEditFile = ref<Images[]>([]); // 기존이미지에서 파일추가�
 const uploadedImageFileName = ref<{ src: string }[]>([]); // 파이어베이스 storage업로드된 url 경로
 
 const formData = ref({
-  title: localStorage.getItem('title') || '',
-  content: localStorage.getItem('content') || '',
+  title: localStorage.getItem('edit-title') || '',
+  content: localStorage.getItem('edit-content') || '',
 });
-const tags = ref<string[]>(JSON.parse(localStorage.getItem('tags') || '[]'));
+const tags = ref<string[]>(
+  JSON.parse(localStorage.getItem('edit-tags') || '[]')
+);
 
 const isShowFileEdit = ref(false);
 const isLoading = ref(false);
@@ -222,9 +224,9 @@ const onSubmit = async () => {
       alert('게시글 수정을 완료했습니다.');
       isLoading.value = false;
 
-      localStorage.removeItem('title');
-      localStorage.removeItem('content');
-      localStorage.removeItem('tags');
+      localStorage.removeItem('edit-tags');
+      localStorage.removeItem('edit-title');
+      localStorage.removeItem('edit-content');
       router.go(-1);
 
       return;
@@ -248,10 +250,11 @@ onMounted(async () => {
     oldData.value = data[0];
     const hashTags = data[0].tags.map((tag: string) => `#${tag}`);
 
-    localStorage.setItem('tags', JSON.stringify(hashTags));
-    localStorage.setItem('title', data[0].title);
-    localStorage.setItem('content', data[0].content);
+    localStorage.setItem('edit-tags', JSON.stringify(hashTags));
+    localStorage.setItem('edit-title', data[0].title);
+    localStorage.setItem('edit-content', data[0].content);
     formData.value = { title: data[0].title, content: data[0].content };
+    tags.value = hashTags;
 
     if (data[0].imageUrl.length !== 0) {
       imagesFile.value = data[0].imageUrl;
@@ -261,9 +264,9 @@ onMounted(async () => {
 });
 
 onUnmounted(() => {
-  localStorage.removeItem('tags');
-  localStorage.removeItem('title');
-  localStorage.removeItem('content');
+  localStorage.removeItem('edit-tags');
+  localStorage.removeItem('edit-title');
+  localStorage.removeItem('edit-content');
 });
 </script>
 

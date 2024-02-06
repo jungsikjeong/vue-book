@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { Swiper, SwiperSlide } from 'swiper/vue';
-import { Navigation, Pagination } from 'swiper/modules';
+import { Navigation, Pagination, Autoplay } from 'swiper/modules';
 
 import 'swiper/swiper-bundle.css';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import { fetchHotTopic } from '@/api/hotTopic';
 
-const modules = ref([Navigation, Pagination]);
+const modules = ref([Navigation, Pagination, Autoplay]);
 
 const hotTopicList = ref();
 const currentSlide = ref();
@@ -29,6 +29,10 @@ onMounted(async () => {
 
     <div class="bottom-wrapper">
       <swiper
+        :autoplay="{
+          delay: 2500,
+          disableOnInteraction: false,
+        }"
         :rewind="true"
         :navigation="false"
         :modules="modules"

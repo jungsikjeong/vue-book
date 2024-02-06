@@ -15,7 +15,7 @@ const onContentUpdate = () => {
   if (quill.value) {
     const newContent = quill.value.getHTML();
     props.onFormDataUpdate && props.onFormDataUpdate({ content: newContent });
-    localStorage.setItem('content', newContent);
+    localStorage.setItem('edit-content', newContent);
   }
 };
 
@@ -27,7 +27,7 @@ const onTitleUpdate = (e: any) => {
       e.target.value = title.slice(0, -1);
       return alert('제목은 13글자 이내로 작성해주세요');
     }
-    localStorage.setItem('title', title);
+    localStorage.setItem('edit-title', title);
 
     props.onFormDataUpdate({ title: e.target.value });
   }
@@ -42,7 +42,7 @@ const editorOptions = ref({
 
 onMounted(() => {
   if (quill.value) {
-    quill.value.setHTML(localStorage.getItem('content') || '');
+    quill.value.setHTML(localStorage.getItem('edit-content') || '');
   }
 });
 </script>
